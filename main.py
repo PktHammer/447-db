@@ -2,6 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 import secrets_ignore
 
+
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     main_prison_data = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
@@ -18,11 +19,10 @@ def update():
 
     # Close conn
     dbConnection.close()
-    pass
+    return
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
     # Read data from site
     update()
     print("Hello world")
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
