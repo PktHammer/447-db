@@ -17,7 +17,7 @@ dtype_prison_data = {
 	"prison_name" : CHAR(200),
 	"date" : date,
 	"source" : TEXT(500),
-	"residents_confirmed" : int
+	"residents_confirmed" : int,
 	"staff_confirmed" : int,
 	"staff_confirmed" : int,
 	"residents_death" : int,
