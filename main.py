@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 import secrets_ignore
 
 dtype_covid_data = {
-        "date": date,
-        "county": CHAR(50),
-        "state": CHAR(50),
+        "date": datetime,
+        "county": string,
+        "state": string,
         "fips": int,
         "cases": int,
 	"death": int
@@ -13,10 +13,10 @@ dtype_covid_data = {
 
 dtype_prison_data = {
 	"facility_id" : int,
-	"jurisdiction" : CHAR(50),
-	"prison_name" : CHAR(200),
-	"date" : date,
-	"source" : TEXT(500),
+	"jurisdiction" : string,
+	"prison_name" : string,
+	"date" : datetime,
+	"source" : string,
 	"residents_confirmed" : int,
 	"staff_confirmed" : int,
 	"staff_confirmed" : int,
@@ -42,21 +42,21 @@ dtype_prison_data = {
         "staff_initiated" : int,
         "staff_completed" : int,
         "staff_vadmin" : int,
-        "address" : TEXT(500),
+        "address" : string,
         "zipcode" : int,
-        "city" : CHAR(50),
+        "city" : string,
         "county" : int,
         "latitude" : float,
         "longitude" : float,
         "county_fips" : int,
         "hifld_id" : int,
-        "jurisdiction_scraper" : CHAR(50),
-        "description" : CHAR(50),
-        "security" : CHAR(50),
-        "age" : CHAR(50),
-        "is_different_operator" : bool,
-        "different_operator" : CHAR(50),
-        "capacity" : CHAR(50),
+        "jurisdiction_scraper" : string,
+        "description" : string,
+        "security" : string,
+        "age" : string,
+        "is_different_operator" : int,
+        "different_operator" : string,
+        "capacity" : string,
         "bjs_id" : CHAR(50),
         "source_population_feb20" : CHAR(50),
         "source_capacity" : CHAR(50),
@@ -67,8 +67,8 @@ dtype_prison_data = {
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     main_prison_data = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
-    df_covid = pd.read_csv(main_covid_data, dtype_covid_data)
-    df_prison = pd.read_csv(main_prison_data, dtype_prison_data)
+    df_covid = pd.read_csv(main_covid_data, dtype = dtype_covid_data)
+    df_prison = pd.read_csv(main_prison_data, dtype = dtype_prison_data)
 
     covid_table_name = "main_covid_data"
     prison_table_name = "main_prison_data"
