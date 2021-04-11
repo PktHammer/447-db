@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 import secrets_ignore
 
 dtype_covid_data = {
-        "date": datetime,
-        "county": string,
-        "state": string,
+        "date": "DATE",
+        "county": "CHAR(50)",
+        "state": "CHAR(50)",
         "fips": int,
         "cases": int,
 	"death": int
@@ -13,10 +13,10 @@ dtype_covid_data = {
 
 dtype_prison_data = {
 	"facility_id" : int,
-	"jurisdiction" : string,
-	"prison_name" : string,
-	"date" : datetime,
-	"source" : string,
+	"jurisdiction" : "CHAR(50)",
+	"prison_name" : "CHAR(50)",
+	"date" : "DATE",
+	"source" : "TEXT(500)",
 	"residents_confirmed" : int,
 	"staff_confirmed" : int,
 	"staff_confirmed" : int,
@@ -42,26 +42,26 @@ dtype_prison_data = {
         "staff_initiated" : int,
         "staff_completed" : int,
         "staff_vadmin" : int,
-        "address" : string,
+        "address" : "CHAR(200)",
         "zipcode" : int,
-        "city" : string,
+        "city" : "CHAR(50)",
         "county" : int,
         "latitude" : float,
         "longitude" : float,
         "county_fips" : int,
         "hifld_id" : int,
-        "jurisdiction_scraper" : string,
-        "description" : string,
-        "security" : string,
-        "age" : string,
+        "jurisdiction_scraper" : "CHAR(50)",
+        "description" : "CHAR(50)",
+        "security" : "CHAR(50)",
+        "age" : "CHAR(50)",
         "is_different_operator" : int,
-        "different_operator" : string,
-        "capacity" : string,
-        "bjs_id" : CHAR(50),
-        "source_population_feb20" : CHAR(50),
-        "source_capacity" : CHAR(50),
-	"website" : TEXT(500),
-	"ice_field_office" : CHAR(50)
+        "different_operator" : "CHAR(50)",
+        "capacity" : "CHAR(50)",
+        "bjs_id" : "CHAR(50)",
+        "source_population_feb20" : "CHAR(50)",
+        "source_capacity" : "CHAR(50)",
+	"website" : "TEXT(500)",
+	"ice_field_office" : "CHAR(50)"
 }
 
 def update():
