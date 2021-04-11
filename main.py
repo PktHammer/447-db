@@ -1,9 +1,10 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import secrets_ignore
+import datetime
 
 dtype_covid_data = {
-        "date": "DATE",
+        "date": datetime.date,
         "county": "CHAR(50)",
         "state": "CHAR(50)",
         "fips": int,
@@ -15,7 +16,7 @@ dtype_prison_data = {
 	"facility_id" : int,
 	"jurisdiction" : "CHAR(50)",
 	"prison_name" : "CHAR(50)",
-	"date" : "DATE",
+	"date" : datetime.date,
 	"source" : "TEXT(500)",
 	"residents_confirmed" : int,
 	"staff_confirmed" : int,
