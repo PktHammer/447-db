@@ -10,7 +10,7 @@ ERRNO_PW_EXISTS = -1
 # Query User
 ERROR_USER_DNE = -2
 
-def insert_pw(username, password):
+def insert_user(username, password):
     # Error message
     ERROR_MESSAGE = "Sorry, this username has been taken"
 
