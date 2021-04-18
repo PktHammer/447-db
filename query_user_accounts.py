@@ -45,7 +45,8 @@ def insert_pw(username, password):
 
         # If UN DNE, set UN/PW
     result = dbConnection.execute(
-        "PREPARE cov_att_login from 'INSERT INTO covid_user_accounts(username, password) VALUES(?,?);';")
+        "PREPARE cov_insert_user from 'INSERT INTO covid_user_accounts(username, password) VALUES(?,?);';")
+    result = pd.read_sql("EXECUTE cov_insert_user using @a, @b;", dbConnection)
     dbConnection.close()
     return 1
 
