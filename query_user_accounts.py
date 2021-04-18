@@ -10,6 +10,20 @@ ERRNO_PW_EXISTS = -1
 # Query User
 ERROR_USER_DNE = -2
 
+def initialize_user_table(): # Run as admin please
+    engine_string = 'mysql+pymysql://' + \
+                    secrets_ignore.user + ":" + \
+                    secrets_ignore.password + "@" + \
+                    secrets_ignore.ip_endpoint + "/" + \
+                    secrets_ignore.db_name
+    engine = create_engine(engine_string)
+    dbConnection = engine.connect()
+    result = dbConnection.execute("CREATE TABLE covid_user_accounts ("
+                                  "username varchar(255),"
+                                  "password varchar(64)"
+                                  ");")
+    dbConnection.close()
+    return 0
 
 def insert_user(username, password):
     # Error message
