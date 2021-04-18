@@ -76,6 +76,7 @@ def query_user(username, password):
         return ERROR_USER_DNE
     else:
         # Successful login, return token perhaps?  (SESS_ID token?)
+        print("Remove me when this is completed")  # TODO: Do login work here
 
     dbConnection.close()
     return 1
