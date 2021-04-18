@@ -10,6 +10,7 @@ ERRNO_PW_EXISTS = -1
 # Query User
 ERROR_USER_DNE = -2
 
+
 def insert_user(username, password):
     # Error message
     ERROR_MESSAGE = "Sorry, this username has been taken"
@@ -30,7 +31,7 @@ def insert_user(username, password):
     setup = "SET @b = " + password + ";"
     result = dbConnection.execute(stmt)
 
-    # Check if UN exists
+    # Query if UN exists
     result = dbConnection.execute("PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=?;';")
     result = pd.read_sql("EXECUTE cov_att_login using @a, @b;", dbConnection)
 
@@ -67,6 +68,8 @@ def query_user(username, password):
     result = dbConnection.execute(stmt)
     setup = "SET @b = " + password + ";"
     result = dbConnection.execute(stmt)
+
+    # Query for username and password match
     result = dbConnection.execute(
         "PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=? AND password=?;';")
     result = pd.read_sql("EXECUTE cov_att_login using @a, @b;", dbConnection)
