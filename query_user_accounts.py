@@ -40,14 +40,16 @@ def insert_user(username, password):
     dbConnection = engine.connect()
 
     # Setup
-    stmt = "SET @a = " + username + ";"
+    stmt = "SET @a = \'" + username + "\';"
     result = dbConnection.execute(stmt)
-    setup = "SET @b = " + password + ";"
+    setup = "SET @b = \'" + password + "\';"
     result = dbConnection.execute(stmt)
 
     # Query if UN exists
+    #result = dbConnection.execute(f"SELECT * from covid_user_accounts where username=\"{username}\";")
+    #print(f"The result: {result}")
     result = dbConnection.execute("PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=?;';")
-    result = pd.read_sql("EXECUTE cov_att_login using @a, @b;", dbConnection)
+    result = pd.read_sql("EXECUTE cov_att_login using @a;", dbConnection)
 
     # If the UN exists, fail
     fail = True
@@ -59,9 +61,9 @@ def insert_user(username, password):
         return ERRNO_PW_EXISTS
 
         # If UN DNE, set UN/PW
-    result = dbConnection.execute(
+    dbConnection.execute(
         "PREPARE cov_insert_user from 'INSERT INTO covid_user_accounts(username, password) VALUES(?,?);';")
-    result = pd.read_sql("EXECUTE cov_insert_user using @a, @b;", dbConnection)
+    # result = pd.read_sql("EXECUTE cov_insert_user using @a, @b;", dbConnection)
     dbConnection.close()
     return 1
 
@@ -97,3 +99,6 @@ def query_user(username, password):
 
     dbConnection.close()
     return 1
+
+if __name__ == "__main__":
+    insert_user("AA", "AA")
