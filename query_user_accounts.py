@@ -41,16 +41,17 @@ def insert_user(username, password):
 
     # Setup
     stmt = "SET @a = \'" + username + "\';"
+    print(stmt)
     result = dbConnection.execute(stmt)
-    setup = "SET @b = \'" + password + "\';"
+    stmt = "SET @b = \'" + password + "\';"
     result = dbConnection.execute(stmt)
-
+    print(stmt)
     # Query if UN exists
     #result = dbConnection.execute(f"SELECT * from covid_user_accounts where username=\"{username}\";")
     #print(f"The result: {result}")
+    #
     result = dbConnection.execute("PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=?;';")
     result = pd.read_sql("EXECUTE cov_att_login using @a;", dbConnection)
-
     # If the UN exists, fail
     fail = True
     if result.empty:
@@ -60,10 +61,12 @@ def insert_user(username, password):
         dbConnection.close()
         return ERRNO_PW_EXISTS
 
-        # If UN DNE, set UN/PW
-    dbConnection.execute(
-        "PREPARE cov_insert_user from 'INSERT INTO covid_user_accounts(username, password) VALUES(?,?);';")
-    # result = pd.read_sql("EXECUTE cov_insert_user using @a, @b;", dbConnection)
+    # If UN DNE, set UN/PW
+    print("Here")
+    result = dbConnection.execute("INSERT INTO covid_user_accounts(username, password) VALUES (@a,@b)")
+    # dbConnection.execute(
+    #     "PREPARE cov_insert_user from 'INSERT INTO covid_user_accounts (username, password) VALUES (?,?);';")
+    # result = dbConnection.execute("EXECUTE cov_insert_user using @a, @b;")
     dbConnection.close()
     return 1
 
@@ -80,25 +83,28 @@ def query_user(username, password):
     dbConnection = engine.connect()
 
     # Query
-    stmt = "SET @a = " + username + ";"
+    stmt = "SET @a = \'" + username + "\';"
     result = dbConnection.execute(stmt)
-    setup = "SET @b = " + password + ";"
+    stmt = "SET @b = \'" + password + "\';"
     result = dbConnection.execute(stmt)
 
     # Query for username and password match
     result = dbConnection.execute(
         "PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=? AND password=?;';")
     result = pd.read_sql("EXECUTE cov_att_login using @a, @b;", dbConnection)
+    print("Uhh T1")
     if result.empty:
         # Failed login, return error
+        print("Uhh T2")
         dbConnection.close()
         return ERROR_USER_DNE
     else:
         # Successful login, return token perhaps?  (SESS_ID token?)
+        print("Uhh T3")
         print("Remove me when this is completed")  # TODO: Do login work here
-
+    print("T4")
     dbConnection.close()
     return 1
 
 if __name__ == "__main__":
-    insert_user("AA", "AA")
+    print("RC: " + str(insert_user("AA", "AA")))

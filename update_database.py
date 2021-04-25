@@ -68,17 +68,24 @@ dtype_prison_data = {
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     main_prison_data = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
+
+    # Extra opendata tables (json backends)
+    non_prison_county_hospitalization = "https://data.ca.gov/api/3/action/datastore_search?resource_id=0d9be83b-5027-41ff-97b2-6ca70238d778"
+
     df_covid = pd.read_csv(main_covid_data)
     df_prison = pd.read_csv(main_prison_data)
+    df_full_cty_hosp = pd.read_json(non_prison_county_hospitalization)
+    df_full_cty_hosp.rename(columns={"todays_date": "date"})
 
+    # Main tables
     covid_table_name = "main_covid_data"
     prison_table_name = "main_prison_data"
+
     engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
     send_frame_covid = df_covid.to_sql(covid_table_name, dbConnection, if_exists='replace', dtype=dtype_covid_data)
     send_frame_prison = df_prison.to_sql(prison_table_name, dbConnection, if_exists='replace', dtype=dtype_prison_data)
-
     # Close conn
     dbConnection.close()
     pass
