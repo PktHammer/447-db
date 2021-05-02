@@ -3,6 +3,9 @@ from sqlalchemy import create_engine
 import secrets_ignore
 import datetime
 import sqlalchemy
+import code
+import os
+import sys
 
 dtype_covid_data = {
 	"date": sqlalchemy.types.DATE,
@@ -84,6 +87,16 @@ def update():
     engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
+
+    # TODO: REMOVE INTERACTIVE TESTING WHEN READY
+    # console = code.InteractiveConsole(dict(globals(), **locals()))
+    # console.interact('Interactive shell for %s' %
+    #                  os.path.basename(sys.argv[0]))
+
+    # Deduplication
+    df_covid.drop_duplicates(subset=['county', 'date'], keep='last')
+
+    # Automated update
     send_frame_covid = df_covid.to_sql(covid_table_name, dbConnection, if_exists='replace', dtype=dtype_covid_data)
     send_frame_prison = df_prison.to_sql(prison_table_name, dbConnection, if_exists='replace', dtype=dtype_prison_data)
     # Close conn
