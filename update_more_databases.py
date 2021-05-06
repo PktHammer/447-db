@@ -21,14 +21,14 @@ def update_vaccine_data():
     # dbConnection.execute(f"ALTER TABLE {vaccine_tbl_name} DROP COLUMN index;")
     dbConnection.close()
 
-def join_vaccine_covid():
-    engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
-    dbConnection.execute("CREATE VIEW joint_vaccine_covid AS SELECT 'index' id1 FROM main_vaccine_by_cty A "
-                         "LEFT JOIN main_covid_data B "
-                         "ON A.county = B.county and A.administered_date = B.date;")
-    dbConnection.close()
+# def join_vaccine_covid():
+#     engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
+#     engine = create_engine(engine_string)
+#     dbConnection = engine.connect()
+#     dbConnection.execute("CREATE VIEW joint_vaccine_covid AS SELECT 'index' id1 FROM main_vaccine_by_cty A "
+#                          "LEFT JOIN main_covid_data B "
+#                          "ON A.county = B.county and A.administered_date = B.date;")
+#     dbConnection.close()
 
 # def drop_indx():
 

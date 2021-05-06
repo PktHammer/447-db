@@ -103,9 +103,25 @@ def update():
     dbConnection.close()
     pass
 
+def update_geojson():
+    prison_geojson_url = "https://opendata.arcgis.com/datasets/ee98a8bdd0994597b322220909525dd4_0.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    df_prison_geojson = pd.read_csv(prison_geojson_url)
+    tb_name_prison_geojson = "prison_geojson_ca"
+
+    # Setup engine
+    engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
+    engine = create_engine(engine_string)
+    dbConnection = engine.connect()
+
+    # Exec
+    send_frame_covid = df_prison_geojson.to_sql(tb_name_prison_geojson, dbConnection, if_exists='replace')
+    dbConnection.close()
+    pass
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # Read data from site
-    update()
+    # update()
+    update_geojson()
     print("Hello world")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
