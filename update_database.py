@@ -68,6 +68,12 @@ dtype_prison_data = {
 	"ice_field_office" : sqlalchemy.types.VARCHAR(length=50)
 }
 
+def update_from_link(link:str, renames: dict, table_name: str):
+    df = pd.read_csv(link)
+    if renames is not False:
+        df.rename(columns=renames)
+
+
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     main_prison_data = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
