@@ -20,7 +20,7 @@ def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: st
 
     # Do query
     result = dbConnection.execute(
-        "PREPARE " + str(prepname) + " from 'SELECT * from " + str(tbl_name) + " where date=?;';"
+        "PREPARE " + str(prepname) + " from 'SELECT * from " + str(tbl_name) + " " + str(where_clause) + ";';"
     )
     covid_data_df = pd.read_sql("EXECUTE " + str(prepname) + " using @a;", dbConnection)
     pd.set_option('display.expand_frame_repr', False)
@@ -79,11 +79,22 @@ def deduplicate():
     dbConnection.execute("")
 # Setup
 if __name__ == "__main__":
+    prepare_one(return_type="print",
+                prepname="sdtest",
+                tbl_name="main_covid_data",
+                where_clause="where county=? limit 10",
+                var_a='"Alameda"')
     prepare_two(return_type="print",
-                prepname="prison_data",
-                tbl_name="main_vaccine_by_cty",
-                where_clause="where county=? and administered_date=? limit 10",
+                prepname="sdtest2",
+                tbl_name="main_covid_data",
+                where_clause="where county=? and date=? limit 10",
                 var_a='"Alameda"',
-                var_b="'2020-12-15'")  # Note, dates must be like "'2020-04-07'"
+                var_b="'2020-12-15'")
+    # prepare_two(return_type="print",
+    #             prepname="prison_data",
+    #             tbl_name="main_vaccine_by_cty",
+    #             where_clause="where county=? and administered_date=? limit 10",
+    #             var_a='"Alameda"',
+    #             var_b="'2020-12-15'")  # Note, dates must be like "'2020-04-07'"
 
 
