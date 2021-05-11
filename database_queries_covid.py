@@ -79,6 +79,12 @@ def deduplicate():
     dbConnection.execute("")
 # Setup
 if __name__ == "__main__":
+    # Return type can return a csv (csv) or print (print) or a dataframe (anything else)
+    # prepname needs to be unique for the query -- TODO: actually prepare all queries and delete the prep creation lines
+    # tbl_name is the name of the table in the database
+    # where_clause is remaining sql to be executed -- variables will be assigned as ?s
+    # var_a is the first variable (?) to be replaced
+    # var_b is the second variable (?) to be replaced
     prepare_one(return_type="print",
                 prepname="sdtest",
                 tbl_name="main_covid_data",
