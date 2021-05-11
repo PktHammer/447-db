@@ -128,6 +128,6 @@ def update_geojson():
 if __name__ == '__main__':
     # Read data from site
     # update()
-    update_geojson()
+    update()
     print("Hello world")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
