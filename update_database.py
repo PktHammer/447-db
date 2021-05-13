@@ -35,13 +35,6 @@ def update_from_link(link: str, renames: dict, table_name: str):
         df.rename(columns=renames)
 
 
-def connectDB():
-    engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
-    return dbConnection
-
-
 # Main update functions
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
@@ -77,7 +70,9 @@ def update():
     prison_table_name = "main_prison_data"
 
     # Connect
-    dbConnection = connectDB()
+    engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
+    engine = create_engine(engine_string)
+    dbConnection = engine.connect()
 
     # # TODO: REMOVE INTERACTIVE TESTING WHEN READY
     # console = code.InteractiveConsole(dict(globals(), **locals()))
