@@ -27,7 +27,7 @@ DTYPE_PRISON_DATA = {
 }
 
 
-# Main update functions
+# Main update function
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     main_prison_data = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
