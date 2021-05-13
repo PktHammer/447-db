@@ -84,6 +84,7 @@ def update():
         print("Error, table creation failed, data processing likely required")
     except ValueError:  # Table already exists, should not happen due to if_exists='replace'
         print("Something terrible has happened.  ValueError Received.")
+
     # Close conn
     dbConnection.close()
     return 0
