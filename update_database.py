@@ -14,7 +14,6 @@ DTYPE_COVID_DATA = {
 }
 
 DTYPE_PRISON_DATA = {
-    # Used
     "name": sqlalchemy.types.VARCHAR(length=50),
     "date": sqlalchemy.types.DATE,
     "address": sqlalchemy.types.VARCHAR(length=100),
