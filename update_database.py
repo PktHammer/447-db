@@ -34,15 +34,14 @@ def update():
     df_covid = pd.read_csv(main_covid_data)
     df_prison = pd.read_csv(main_prison_data)
 
-    # Data Processing
-    # Covid table:
+    # Data Processing: Covid table
     df_covid = df_covid[df_covid['state'] == "California"]
     numeric_values = ['cases', 'deaths']
     df_covid[numeric_values] = df_covid[numeric_values].astype(int)
 
     df_covid.drop_duplicates(subset=['county', 'date'], keep='last')
 
-    # Prison table:
+    # Data Processing: Prison table
     kept_columns = ['Name', 'Date', 'Address', 'County', 'Residents.Confirmed', 'Staff.Confirmed', 'Residents.Active',
                     'Staff.Active', 'Residents.Deaths', 'Staff.Deaths']
     df_prison = df_prison[kept_columns]
