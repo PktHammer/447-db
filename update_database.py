@@ -40,6 +40,8 @@ def update():
     numeric_values = ['cases', 'deaths']
     df_covid[numeric_values] = df_covid[numeric_values].astype(int)
 
+    df_covid.drop_duplicates(subset=['county', 'date'], keep='last')
+
     # Prison table:
     kept_columns = ['Name', 'Date', 'Address', 'County', 'Residents.Confirmed', 'Staff.Confirmed', 'Residents.Active',
                     'Staff.Active', 'Residents.Deaths', 'Staff.Deaths']
@@ -56,7 +58,7 @@ def update():
 
     df_prison.dropna(subset=['address'], inplace=True)
 
-    # Main tables
+    # Table Naming
     covid_table_name = "main_covid_data"
     prison_table_name = "main_prison_data"
 
@@ -69,9 +71,6 @@ def update():
     # console = code.InteractiveConsole(dict(globals(), **locals()))
     # console.interact('Interactive shell for %s' %
     #                  os.path.basename(sys.argv[0]))
-
-    # Deduplication
-    df_covid.drop_duplicates(subset=['county', 'date'], keep='last')
 
     # Update
     try:
