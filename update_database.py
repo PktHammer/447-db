@@ -58,6 +58,9 @@ def update():
 
     df_prison.dropna(subset=['address'], inplace=True)
 
+    df_prison['name'] = df_prison['name'].str.title()
+    df_prison['address'] = df_prison['address'].str.upper()
+
     # Table Naming
     covid_table_name = "main_covid_data"
     prison_table_name = "main_prison_data"
