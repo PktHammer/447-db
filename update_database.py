@@ -51,24 +51,25 @@ def update():
     df_prison = pd.read_csv(main_prison_data)
 
     # Data Processing
-    # covid table: Drop non-CA results
+    # Covid table:
     df_covid = df_covid[df_covid['state'] == "California"]
     numeric_values = ['cases', 'deaths']
     df_covid[numeric_values] = df_covid[numeric_values].astype(int)
 
     # Prison table:
-    # Drop anything without an address
-    # Keep tables for Name, Address, County, Date, Residents.Confirmed, Staff.Confirmed, Residents.Active, Staff.Deaths
     kept_columns = ['Name', 'Date', 'Address', 'County', 'Residents.Confirmed', 'Staff.Confirmed', 'Residents.Active',
                     'Staff.Active', 'Residents.Deaths', 'Staff.Deaths']
     df_prison = df_prison[kept_columns]
+
     better_names = ['name', 'date', 'address', 'county', 'residents_confirmed', 'staff_confirmed', 'residents_active',
                     'staff_active', 'residents_deaths', 'staff_deaths']
     df_prison.columns = better_names
+
     numeric_values = ['residents_confirmed', 'staff_confirmed', 'residents_active', 'staff_active', 'residents_deaths',
                       'staff_deaths']
     df_prison[numeric_values] = df_prison[numeric_values].fillna(0)
     df_prison[numeric_values] = df_prison[numeric_values].astype(int)
+
     df_prison.dropna(subset=['address'], inplace=True)
 
     # Main tables
