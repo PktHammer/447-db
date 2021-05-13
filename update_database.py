@@ -26,6 +26,7 @@ DTYPE_PRISON_DATA = {
     "staff_deaths": sqlalchemy.types.INT,
 }
 
+
 # Main update functions
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
