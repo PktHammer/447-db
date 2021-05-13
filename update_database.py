@@ -26,14 +26,6 @@ DTYPE_PRISON_DATA = {
     "staff_deaths": sqlalchemy.types.INT,
 }
 
-
-# Helper functions
-def update_from_link(link: str, renames: dict, table_name: str):
-    df = pd.read_csv(link)
-    if renames is not False:
-        df.rename(columns=renames)
-
-
 # Main update functions
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
@@ -89,7 +81,7 @@ def update():
     except TypeError:  # Table not properly made
         print("Error, table creation failed, data processing likely required")
     except ValueError:  # Table already exists, should not happen due to if_exists='replace'
-        pass
+        print("Something terrible has happened.  ValueError Received.")
     # Close conn
     dbConnection.close()
     return 0
