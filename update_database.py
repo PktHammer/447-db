@@ -1,11 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import secrets_ignore
-import datetime
 import sqlalchemy
-import code
-import os
-import sys
 
 # Defined Data Types
 DTYPE_COVID_DATA = {
@@ -32,6 +28,7 @@ DTYPE_PRISON_DATA = {
 }
 
 
+# Helper functions
 def update_from_link(link: str, renames: dict, table_name: str):
     df = pd.read_csv(link)
     if renames is not False:
@@ -45,10 +42,10 @@ def connectDB():
     return dbConnection
 
 
+# Main update functions
 def update():
     main_covid_data = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     main_prison_data = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
-    non_prison_county_hospitalization = "https://data.ca.gov/api/3/action/datastore_search?resource_id=0d9be83b-5027-41ff-97b2-6ca70238d778"
 
     df_covid = pd.read_csv(main_covid_data)
     df_prison = pd.read_csv(main_prison_data)
