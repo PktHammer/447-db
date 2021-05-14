@@ -50,7 +50,8 @@ def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFI
         delete_this_table = result['table_name'].tolist()[0]
         dbConnection.execute(f"DROP TABLE IF EXISTS {delete_this_table}")
         dbConnection.execute(f"DELETE FROM {db_config.USER_DB_UPLOADS} WHERE table_name={tn}")
-        return f"Deleted Table {delete_this_table}"
+        print(f"Success: Deleted Table {delete_this_table}")
+        return f"Success: Deleted Table {delete_this_table}"
     else:
         print(f"Invalid delete")
         return f"Invalid delete."
@@ -73,7 +74,7 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
         return "Error, the table is in use"
     else:
         # Successful login, return token perhaps?  (SESS_ID token?)
-        print(f"Success: Table Created: {new_table_name}")  # TODO: Do login work here
+        pass
         # Continue
 
     try:
@@ -94,9 +95,11 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     except Exception as e: # On fail, rollback
         result = dbConnection.execute(f"DROP TABLE IF EXISTS {new_table_name}")
     dbConnection.close()
+    print(f"Success: Table Created: {new_table_name}")  # TODO: Do login work here
+    return f"Success, Table Created: {new_table_name}"
 
 if __name__ == "__main__":
     # update_vaccine_data()
-    # create_new_table(vaccine_data_csv, vaccine_tbl_name, "TEST_USER_1")
+    create_new_table(vaccine_data_csv, vaccine_tbl_name, "TEST_USER_1")
     remove_user_table(vaccine_tbl_name, test_user)
     pass
