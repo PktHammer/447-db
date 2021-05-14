@@ -6,40 +6,15 @@ import sqlalchemy
 import db_utils
 import json
 
-# DEBUG
-import code
-import os
-import sys
-
-
-blacklist = []
-
-reserved_tables = [{db_config.COVID_DATA_TABLE_NAME}, {db_config.PRISON_DATA_TABLE_NAME}, {db_config.USER_DB_UPLOADS}, {db_config.USER_ACCOUNTS}]
+reserved_tables = [{db_config.COVID_DATA_TABLE_NAME},
+                   {db_config.PRISON_DATA_TABLE_NAME},
+                   {db_config.USER_DB_UPLOADS},
+                   {db_config.USER_ACCOUNTS}]
 
 # Test csv
 vaccine_data_csv = "https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv"
 vaccine_tbl_name = "main_vaccine_by_cty"
 test_user = "TEST_USER_1"
-
-# TODO: Convert blacklist to database
-# TODO: Convert new table update to store in database with url and requester name
-# TODO: Restrict table removal to requester name
-
-# def remove_from_blacklist(blacklist_url: str):
-#     if blacklist_url not in blacklist:
-#         blacklist.remove(blacklist_url)
-#         return f"Successfully removed {blacklist_url} from blacklist"
-#     else:
-#         return f"{blacklist_url} does not exist in blacklist"
-#
-#
-# def add_to_blacklist(blacklist_url: str):
-#     if blacklist_url not in blacklist:
-#         blacklist.append(blacklist_url)
-#         return f"Successfully added {blacklist_url} to blacklist"
-#     else:
-#         return f" Table {blacklist_url} already exists in blacklist"
-
 
 def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFIED"):
     dbConnection = db_utils.db_connect()
@@ -98,8 +73,8 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     print(f"Success: Table Created: {new_table_name}")  # TODO: Do login work here
     return f"Success, Table Created: {new_table_name}"
 
+
 if __name__ == "__main__":
     # update_vaccine_data()
     create_new_table(vaccine_data_csv, vaccine_tbl_name, "TEST_USER_1")
     remove_user_table(vaccine_tbl_name, test_user)
-    pass
