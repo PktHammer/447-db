@@ -8,7 +8,7 @@ import uuid
 
 #######################
 # Log write location
-LOG_LOCATION = "./logs/db"
+LOG_LOCATION = "./db.log"
 
 #######################
 # Defined Data Types
@@ -57,13 +57,18 @@ def db_connect():
 
 # Error logging function, DEP: uuid
 def log_error(exception, err_type, optional_message=""):
-    with open(LOG_LOCATION, 'w') as f:
+    with open(LOG_LOCATION, 'a') as f:
         err_uuid = uuid.uuid1() # Device + Timestamp in one
-        f.write(f"ERROR: {err_uuid}"
-                f"{err_type}: {optional_message}."
-                f"Exception: {exception}"
-                f"END_ERROR: {err_uuid}")
+        f.write(f"ERROR: {err_uuid} :"
+                f"{err_type}: {optional_message}. :\n"
+                f"Exception: {exception}\n"
+                f"END_ERROR: {err_uuid}\n")
 
+
+def log_message(message):
+    with open(LOG_LOCATION, 'a') as f:
+        msg_uuid = uuid.uuid1()
+        f.write(f"MESSAGE: {msg_uuid} {message} END_MESSAGE: {msg_uuid}\n")
 
 #######################
 # Main update function
@@ -144,6 +149,8 @@ def update():
 
     # Close conn
     dbConnection.close()
+    success_uuid = uuid.uuid1()
+    log_message(f"Success: Successful update.")
     return 0
 
 
@@ -159,6 +166,7 @@ if __name__ == '__main__':
     # Read data from site
     update()
     # Run test suite
+    log_message("Starting tests")
     db_tests()
-
-    print("Update Success!")
+    log_message("Tests completed")
+    print("Tests Completed!")
