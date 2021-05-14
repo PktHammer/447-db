@@ -14,7 +14,7 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
     try:
         df_covid = pd.read_csv(MAIN_COVID_DATA_URL)
         df_prison = pd.read_csv(MAIN_PRISON_DATA_URL)
-    except Exception as err:
+    except Exception as err: # TODO: Refine Exception clauses
         db_logger.log_error(exception=err,
                             err_type="DB_CSV_Read Error",
                             optional_message="Check Main COVID Data/Prison Data URLs")
@@ -49,7 +49,7 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
 
         df_prison['name'] = df_prison['name'].str.title()
         df_prison['address'] = df_prison['address'].str.upper()
-    except Exception as e:
+    except Exception as e: # TODO: Refine Exception clauses
         db_logger.log_error(exception=e,
                             err_type="DB_Data_Processing Error",
                             optional_message="Column data names likely changed")
@@ -58,7 +58,7 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
     # Connect
     try:
         dbConnection = db_utils.db_connect()
-    except Exception as e:
+    except Exception as e: # TODO: Refine Exception clauses
         db_logger.log_error(exception=e,
                             err_type="DB_db_connect error",
                             optional_message="")

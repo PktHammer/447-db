@@ -2,6 +2,7 @@
 import os
 import json
 
+
 def full_install():
     confirms = ["Y", "y", "Yes", "yes"]
     denys = ["N", "n", "No", "no"]
