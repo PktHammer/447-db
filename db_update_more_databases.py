@@ -17,6 +17,7 @@ vaccine_tbl_name = "main_vaccine_by_cty"
 # TODO: Convert new table update to store in database with url and requester name
 # TODO: Restrict table removal to requester name
 
+
 def initialize_user_added_tables():
     dbConnection = db_utils.db_connect()
     result = dbConnection.execute("CREATE TABLE user_added_tables ("
@@ -26,6 +27,7 @@ def initialize_user_added_tables():
                                   ");")
     dbConnection.close()
     return 0
+
 
 def remove_from_blacklist(blacklist_url: str):
     if blacklist_url not in blacklist:
@@ -50,6 +52,7 @@ def remove_table_restriction(table_name: str, requesting_user: str="NO_USER_SPEC
     else:
         return f"Table {table_name} does not exist."
 
+
 def remove_table_admin(table_name: str):
     if table_name in used_tables: # IF table match, drop
         used_tables.remove(table_name)
@@ -57,23 +60,27 @@ def remove_table_admin(table_name: str):
     else:
         return f"Table {table_name} does not exist."
 
+
 def create_new_table(csv_url: str, table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
     # Perhaps check if the url is bad here:
     if csv_url in blacklist:
         return "Error, this URL is not allowed"
-    df_new_table = pd.read_csv(csv_url)
-
     if table_name in used_tables:
         return "Error, the table is in use"
 
+    try:
+        df_new_table = pd.read_csv(csv_url)
+    except Exception as e:  # TODO: Actually split the errors, currently it just fails
+        return "Error, URL could not be read"
+
     # Connect
     dbConnection = db_utils.db_connect()
-    send_new_df = df_new_table.to_sql(table_name, dbConnection, if_exists='replace')
-    dbConnection.close()
+    df_new_table.to_sql(table_name, dbConnection, if_exists='replace')
 
+
+    dbConnection.close()
 
 
 if __name__ == "__main__":
     # update_vaccine_data()
     pass
-    # join_vaccine_covid()

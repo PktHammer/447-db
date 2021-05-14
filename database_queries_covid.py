@@ -2,20 +2,14 @@ from sqlalchemy import create_engine
 import pymysql
 import pandas as pd
 import db_config
+import db_utils
+
 
 def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str):
-    engine_string = 'mysql+pymysql://' + \
-                    db_config.user + ":" + \
-                    db_config.password + "@" + \
-                    db_config.ip_endpoint + "/" + \
-                    db_config.db_name
-    print(engine_string)
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
+    dbConnection = db_utils.db_connect()
 
     # Set variable :: Ex: varA = "'2020-04-07'"
     setup = "SET @a = " + str(var_a) + ";"
-    print(setup)
     result = dbConnection.execute(setup)
 
     # Do query
@@ -23,6 +17,8 @@ def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: st
         "PREPARE " + str(prepname) + " from 'SELECT * from " + str(tbl_name) + " " + str(where_clause) + ";';"
     )
     covid_data_df = pd.read_sql("EXECUTE " + str(prepname) + " using @a;", dbConnection)
+
+    # Display
     pd.set_option('display.expand_frame_repr', False)
     if return_type == "csv":
         return_this = covid_data_df.to_csv()
@@ -35,15 +31,9 @@ def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: st
     dbConnection.close()
     return return_this
 
+
 def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str, var_b):
-    engine_string = 'mysql+pymysql://' + \
-                    db_config.user + ":" + \
-                    db_config.password + "@" + \
-                    db_config.ip_endpoint + "/" + \
-                    db_config.db_name
-    print(engine_string)
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
+    dbConnection = db_utils.db_connect()
 
     # Set variable :: Ex: varA = "'2020-04-07'"
     setup = "SET @a = " + str(var_a) + ";"
@@ -60,6 +50,8 @@ def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: st
         "PREPARE " + str(prepname) + " from 'SELECT * from " + str(tbl_name) + " " + str(where_clause) + ";';"
     )
     covid_data_df = pd.read_sql("EXECUTE " + str(prepname) + " using @a, @b;", dbConnection)
+
+    # Display
     pd.set_option('display.expand_frame_repr', False)
     if return_type == "csv":
         return_this = covid_data_df.to_csv()
@@ -72,12 +64,8 @@ def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: st
     dbConnection.close()
     return return_this
 
-def deduplicate():
-    engine_string = 'mysql+pymysql://' + db_config.user + ":" + db_config.password + "@" + db_config.ip_endpoint + "/" + db_config.db_name
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
-    dbConnection.execute("")
-# Setup
+
+# Examples below
 if __name__ == "__main__":
     # Return type can return a csv (csv) or print (print) or a dataframe (anything else)
     # prepname needs to be unique for the query -- TODO: actually prepare all queries and delete the prep creation lines

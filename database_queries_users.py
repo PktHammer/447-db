@@ -13,42 +13,31 @@ ERRNO_PW_EXISTS = -1
 ERROR_USER_DNE = -2
 
 
-def initialize_user_table():
-    dbConnection = db_utils.db_connect()
-    result = dbConnection.execute("CREATE TABLE covid_user_accounts ("
-                                  "username varchar(255),"
-                                  "password varchar(64)"
-                                  ");")
-    dbConnection.close()
-    return 0
 
-def insert_user(username, password):
+
+def insert_user(username: str, password: str):
     # Error message
     ERROR_MESSAGE = "Sorry, this username has been taken"
 
-    # Query
-    engine_string = 'mysql+pymysql://' + \
-                    db_config.user + ":" + \
-                    db_config.password + "@" + \
-                    db_config.ip_endpoint + "/" + \
-                    db_config.db_name
-    print(engine_string)
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
+    # Connect
+    dbConnection = db_utils.db_connect()
 
     # Setup
     stmt = "SET @a = \'" + username + "\';"
-    print(stmt)
+    # print(stmt)
     result = dbConnection.execute(stmt)
     stmt = "SET @b = \'" + password + "\';"
     result = dbConnection.execute(stmt)
-    print(stmt)
+    # print(stmt)
+
     # Query if UN exists
     #result = dbConnection.execute(f"SELECT * from covid_user_accounts where username=\"{username}\";")
     #print(f"The result: {result}")
-    #
+
+    # TODO: Prepared Query (Needs to be moved to a permanent prepare slot)
     result = dbConnection.execute("PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=?;';")
     result = pd.read_sql("EXECUTE cov_att_login using @a;", dbConnection)
+
     # If the UN exists, fail
     fail = True
     if result.empty:
@@ -70,36 +59,27 @@ def insert_user(username, password):
 
 # Get UN/PW
 def query_user(username, password):
-    engine_string = 'mysql+pymysql://' + \
-                    db_config.user + ":" + \
-                    db_config.password + "@" + \
-                    db_config.ip_endpoint + "/" + \
-                    db_config.db_name
-    print(engine_string)
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
+    dbConnection = db_utils.db_connect()
 
-    # Query
+    # Setup username/pw
     stmt = "SET @a = \'" + username + "\';"
     result = dbConnection.execute(stmt)
     stmt = "SET @b = \'" + password + "\';"
     result = dbConnection.execute(stmt)
 
     # Query for username and password match
+    # TODO: Prepared Query (Needs to be moved to a permanent prepare slot)
     result = dbConnection.execute(
         "PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=? AND password=?;';")
     result = pd.read_sql("EXECUTE cov_att_login using @a, @b;", dbConnection)
-    print("Uhh T1")
     if result.empty:
         # Failed login, return error
-        print("Uhh T2")
         dbConnection.close()
         return ERROR_USER_DNE
     else:
         # Successful login, return token perhaps?  (SESS_ID token?)
-        print("Uhh T3")
         print("Remove me when this is completed")  # TODO: Do login work here
-    print("T4")
+    # print("T4")
     dbConnection.close()
     return 1
 
