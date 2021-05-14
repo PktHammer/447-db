@@ -76,5 +76,6 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
 
 if __name__ == "__main__":
     # update_vaccine_data()
-    create_new_table(vaccine_data_csv, vaccine_tbl_name, "TEST_USER_1")
-    remove_user_table(vaccine_tbl_name, test_user)
+    # create_new_table(vaccine_data_csv, vaccine_tbl_name, "TEST_USER_1")
+    # remove_user_table(vaccine_tbl_name, test_user)
+    pass
