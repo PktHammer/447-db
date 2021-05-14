@@ -105,6 +105,6 @@ if __name__ == '__main__':
 
     # Run test suite
     db_logger.log_message("Starting tests")
-    db_tests.db_tests()
+    # db_tests.db_tests()
     db_logger.log_message("Tests completed")
     print("Tests Completed!")
