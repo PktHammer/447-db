@@ -1,14 +1,14 @@
 from sqlalchemy import create_engine
 import pymysql
 import pandas as pd
-import secrets_ignore
+import db_config
 
 def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str):
     engine_string = 'mysql+pymysql://' + \
-                    secrets_ignore.user + ":" + \
-                    secrets_ignore.password + "@" + \
-                    secrets_ignore.ip_endpoint + "/" + \
-                    secrets_ignore.db_name
+                    db_config.user + ":" + \
+                    db_config.password + "@" + \
+                    db_config.ip_endpoint + "/" + \
+                    db_config.db_name
     print(engine_string)
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
@@ -37,10 +37,10 @@ def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: st
 
 def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str, var_b):
     engine_string = 'mysql+pymysql://' + \
-                    secrets_ignore.user + ":" + \
-                    secrets_ignore.password + "@" + \
-                    secrets_ignore.ip_endpoint + "/" + \
-                    secrets_ignore.db_name
+                    db_config.user + ":" + \
+                    db_config.password + "@" + \
+                    db_config.ip_endpoint + "/" + \
+                    db_config.db_name
     print(engine_string)
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
@@ -73,7 +73,7 @@ def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: st
     return return_this
 
 def deduplicate():
-    engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
+    engine_string = 'mysql+pymysql://' + db_config.user + ":" + db_config.password + "@" + db_config.ip_endpoint + "/" + db_config.db_name
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
     dbConnection.execute("")

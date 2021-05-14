@@ -1,7 +1,9 @@
 from sqlalchemy import create_engine
 import pymysql
 import pandas as pd
-import secrets_ignore
+import db_config
+import db_utils
+
 # Set UN/PW
 
 # Global error codes
@@ -10,14 +12,9 @@ ERRNO_PW_EXISTS = -1
 # Query User
 ERROR_USER_DNE = -2
 
-def initialize_user_table(): # Run as admin please
-    engine_string = 'mysql+pymysql://' + \
-                    secrets_ignore.user + ":" + \
-                    secrets_ignore.password + "@" + \
-                    secrets_ignore.ip_endpoint + "/" + \
-                    secrets_ignore.db_name
-    engine = create_engine(engine_string)
-    dbConnection = engine.connect()
+
+def initialize_user_table():
+    dbConnection = db_utils.db_connect()
     result = dbConnection.execute("CREATE TABLE covid_user_accounts ("
                                   "username varchar(255),"
                                   "password varchar(64)"
@@ -31,10 +28,10 @@ def insert_user(username, password):
 
     # Query
     engine_string = 'mysql+pymysql://' + \
-                    secrets_ignore.user + ":" + \
-                    secrets_ignore.password + "@" + \
-                    secrets_ignore.ip_endpoint + "/" + \
-                    secrets_ignore.db_name
+                    db_config.user + ":" + \
+                    db_config.password + "@" + \
+                    db_config.ip_endpoint + "/" + \
+                    db_config.db_name
     print(engine_string)
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
@@ -74,10 +71,10 @@ def insert_user(username, password):
 # Get UN/PW
 def query_user(username, password):
     engine_string = 'mysql+pymysql://' + \
-                    secrets_ignore.user + ":" + \
-                    secrets_ignore.password + "@" + \
-                    secrets_ignore.ip_endpoint + "/" + \
-                    secrets_ignore.db_name
+                    db_config.user + ":" + \
+                    db_config.password + "@" + \
+                    db_config.ip_endpoint + "/" + \
+                    db_config.db_name
     print(engine_string)
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
@@ -105,6 +102,7 @@ def query_user(username, password):
     print("T4")
     dbConnection.close()
     return 1
+
 
 if __name__ == "__main__":
     print("RC: " + str(insert_user("AA", "AA")))

@@ -1,10 +1,10 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import pymysql
-import secrets_ignore
+import db_config
 
 def setup_stmt():
-    engine_string = 'mysql+pymysql://' + secrets_ignore.user + ":" + secrets_ignore.password + "@" + secrets_ignore.ip_endpoint + "/" + secrets_ignore.db_name
+    engine_string = 'mysql+pymysql://' + db_config.user + ":" + db_config.password + "@" + db_config.ip_endpoint + "/" + db_config.db_name
     engine = create_engine(engine_string)
     dbConnection = engine.connect()
     result = dbConnection.execute("SET @a = 'California';")
