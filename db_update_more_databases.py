@@ -14,7 +14,7 @@ import sys
 
 blacklist = []
 
-used_tables = ["main_prison_data", "main_covid_data", "user_added_tables"]
+reserved_tables = [{db_config.COVID_DATA_TABLE_NAME}, {db_config.PRISON_DATA_TABLE_NAME}, {db_config.USER_DB_UPLOADS}, {db_config.USER_ACCOUNTS}]
 
 # Test csv
 vaccine_data_csv = "https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv"
@@ -57,8 +57,9 @@ def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFI
 
 def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
     # Perhaps check if the url is bad here:
-    if csv_url in blacklist:
-        return "Error, this URL is not allowed"
+    if new_table_name in reserved_tables:
+        print("This table is reserved")
+        return "This table is reserved"
 
     # Connect
     dbConnection = db_utils.db_connect()
