@@ -38,10 +38,10 @@ def setup_database():
     pw = json.dumps(db_config.password)
     os.system(f"apt install mariadb-server")
     os.system(f"mysql_secure_installation")
-    os.system(f'mariadb -u root -e "CREATE USER {un} IDENTIFIED BY {pw}; '
-              f'CREATE DATABASE covid_data;'
-              f'GRANT ALL PRIVILEGES on covid_data.* TO {un}; '
-              f'FLUSH PRIVILEGES;"')
+    os.system(f"mariadb -u root -e 'CREATE USER {un} IDENTIFIED BY {pw}; "
+              f"CREATE DATABASE covid_data; "
+              f"GRANT ALL PRIVILEGES on covid_data.* to {un}; "
+              f"FLUSH PRIVILEGES;'")
     pass
 
 # Sets up prereqs
