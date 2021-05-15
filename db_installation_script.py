@@ -41,8 +41,14 @@ def setup_database():
     os.system(f'mariadb -u root -e "CREATE USER {un} IDENTIFIED BY {pw}; '
               f'CREATE DATABASE covid_data;'
               f'GRANT ALL PRIVILEGES on covid_data.* TO {un}; '
-              f'FLUSH PRIVILEGES;')
+              f'FLUSH PRIVILEGES;"')
     pass
+
+# Sets up prereqs
+    os.system(f"apt install python3-pip")
+    os.system(f"python3 -m pip install sqlalchemy")
+    os.system(f"python3 -m pip install numpy")
+    os.system(f"python3 -m pip install pandas")
 
 
 # Full installation
