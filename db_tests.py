@@ -11,14 +11,15 @@ import database_queries_users
 #######################
 # Testing
 
+
 def create_user_test():
     database_queries_users.insert_user(username="TEST_USER_1", password="PASSWORD_1")
     database_queries_users.insert_user(username="TEST_USER_2", password="PASSWORD_2")
 
 
 def query_user_tests():
-    print(database_queries_users.query_user("TEST_USER_1", "PASSWORD_1"))
-    print(database_queries_users.query_user("NOT_A_TEST_USER_1", "PASSWORD_2"))
+    database_queries_users.query_user("TEST_USER_1", "PASSWORD_1")
+    database_queries_users.query_user("NOT_A_TEST_USER_1", "PASSWORD_2")
 
 
 def db_main_url_tests():
@@ -31,6 +32,6 @@ def db_main_url_tests():
 
 
 if __name__ == "__main__":
-    query_user_tests()
+    print(query_user_tests())
     # create_user_test()
     #  db_main_url_tests()

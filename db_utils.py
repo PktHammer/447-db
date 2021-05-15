@@ -8,3 +8,4 @@ def db_connect() -> sqlalchemy.engine.base.Connection:
     engine = sqlalchemy.create_engine(engine_string)
     dbConnection = engine.connect()
     return dbConnection
+
