@@ -45,17 +45,22 @@ def setup_database():
     pass
 
 # Sets up prereqs
+def setup_prereqs():
     os.system(f"apt install python3-pip")
     os.system(f"python3 -m pip install sqlalchemy")
     os.system(f"python3 -m pip install numpy")
     os.system(f"python3 -m pip install pandas")
-
+    os.system(f"python3 -m pip install PyMySQL")
+    os.system(f"python3 -m pip install PyMySQL[ed25519]")
 
 # Full installation
 def full_install():
     response = input(f"Do you want to generate a db_gen_secret file?")
     if response in confirms:
         setup_secret_file()
+    response = input(f"Do you want to set up the prereqs?")
+    if response in confirms:
+        setup_prereqs()
     response = input(f"Do you want to set up the database?")
     if response in confirms:
         setup_database()
