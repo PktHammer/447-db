@@ -2,11 +2,11 @@
 import os
 import json
 
+confirms = ["Y", "y", "Yes", "yes"]
+denys = ["N", "n", "No", "no"]
 
-def full_install():
-    confirms = ["Y", "y", "Yes", "yes"]
-    denys = ["N", "n", "No", "no"]
 
+def setup_secret_file():
     # Defaults
     user = 'db_user'
     password = 'test_db_pw'
@@ -30,10 +30,30 @@ def full_install():
                 f.write(form)
             user_next = True
 
-# Do you want to setup the database Y/N?
 
-# os.system("apt install mariadb-server")
-# os.system("mysql_secure_installation")
-# os.system("mariadb -u root")
+# Sets up database
+def setup_database():
+    import db_config
+    un = json.dumps(db_config.user)
+    pw = json.dumps(db_config.password)
+    os.system(f"apt install mariadb-server")
+    os.system(f"mysql_secure_installation")
+    os.system(f'mariadb -u root -e "CREATE USER {un} IDENTIFIED BY {pw}; '
+              f'CREATE DATABASE covid_data;'
+              f'GRANT ALL PRIVILEGES on covid_data.* TO {un}; '
+              f'FLUSH PRIVILEGES;')
+    pass
 
 
+# Full installation
+def full_install():
+    response = input(f"Do you want to generate a db_gen_secret file?")
+    if response in confirms:
+        setup_secret_file()
+    response = input(f"Do you want to set up the database?")
+    if response in confirms:
+        setup_database()
+
+
+if __name__ == "__main__":
+    full_install()

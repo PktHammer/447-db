@@ -1,6 +1,10 @@
 # Installation Guide
 
-* Run db_installation_script.py
+* Automatic setup for Debian/Ubuntu
+  * Run db_installation_script.py
+* Manual setup required for Windows/CentOS
+  * Run db_installation_script.py to generate secrets file, then manually set up the database
+  * May have to start the service after generating secrets file and installing the server
 
 # Code Manifest
 
