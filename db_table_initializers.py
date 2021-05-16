@@ -11,7 +11,7 @@ def initialize_user_table() -> None:
     result = dbConnection.execute(f"DROP TABLE IF EXISTS {db_config.USER_ACCOUNTS_TBL_NAME};")
     result = dbConnection.execute(f"CREATE TABLE {db_config.USER_ACCOUNTS_TBL_NAME} ("
                                   f"username varchar(255) NOT NULL,"
-                                  f"password varchar(64),"
+                                  f"password varchar(255),"
                                   f"PRIMARY KEY(username)"
                                   f");")
     dbConnection.close()
