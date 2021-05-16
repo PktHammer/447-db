@@ -53,6 +53,4 @@ def admin_drop_all_user_accounts() -> None:
 
 
 if __name__ == "__main__":
-    tables = ["delme_1", "delme_2", "delme_3"]
-    admin_drop_all_user_tables()
-    print(admin_get_all_user_tables())
+    pass

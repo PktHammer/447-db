@@ -27,3 +27,6 @@ UA_LOGIN_FAILED = -1301
 
 # (UAT) User Added Tables
 UAT_URL_ERROR = -1401
+
+# (UAT) Errors
+UAT_ERROR_SELECT_FAILED = -1902

@@ -5,17 +5,18 @@ import datetime
 import sqlalchemy
 import db_utils
 import json
+import db_logger
+import db_return_codes
+
+import utils_debug
 
 reserved_tables = [{db_config.COVID_DATA_TBL_NAME},
                    {db_config.PRISON_DATA_TBL_NAME},
                    {db_config.USER_DB_UPLOADS_TBL_NAME},
                    {db_config.USER_ACCOUNTS_TBL_NAME}]
 
-# Test csv
-vaccine_data_csv = "https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv"
-vaccine_tbl_name = "main_vaccine_by_cty"
-test_user = "TEST_USER_1"
 
+# UAT: Remove User Table
 def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFIED"):
     dbConnection = db_utils.db_connect()
     tn = json.dumps(rm_table_name)
@@ -25,17 +26,21 @@ def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFI
         delete_this_table = result['table_name'].tolist()[0]
         dbConnection.execute(f"DROP TABLE IF EXISTS {delete_this_table}")
         dbConnection.execute(f"DELETE FROM {db_config.USER_DB_UPLOADS_TBL_NAME} WHERE table_name={tn}")
-        print(f"Success: Deleted Table {delete_this_table}")
+        # print(f"Success: Deleted Table {delete_this_table}")
+        db_logger.log_message(f"Success: Deleted Table {delete_this_table}, requesting_user={requesting_user}")
         return f"Success: Deleted Table {delete_this_table}"
     else:
-        print(f"Invalid delete")
-        return f"Invalid delete."
+        # print(f"Invalid delete")
+        db_logger.log_message(f"Invalid Delete of table {rm_table_name}, requesting_user={requesting_user}")
+        return f"Invalid delete of table {rm_table_name}"
 
+
+# UAT: Create new table
 def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
     # Perhaps check if the url is bad here:
     if new_table_name in reserved_tables:
-        print("This table is reserved")
-        return "This table is reserved"
+        print(f"Sorry, {new_table_name} is reserved")
+        return f"Sorry, {new_table_name} is reserved"
 
     # Connect
     dbConnection = db_utils.db_connect()
@@ -45,8 +50,8 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     list_of_used_tables = result['table_name'].tolist()
     if new_table_name in list_of_used_tables:
         # Fail
-        print("Error, the table is in use")
-        return "Error, the table is in use"
+        print(f"Error, the table{new_table_name} is currently in use.  Please select a different table name.")
+        return f"Error, the table{new_table_name} is currently in use.  Please select a different table name."
     else:
         # Successful login, return token perhaps?  (SESS_ID token?)
         pass
@@ -55,11 +60,12 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     try:
         df_new_table = pd.read_csv(csv_url)
     except Exception as e:  # TODO: Actually split the errors, currently it just fails
-        return "Error, URL could not be read"
+        return f"Error, URL could not be read"
 
-    # Connect
+    # Make new table
     df_new_table.to_sql(new_table_name, dbConnection, if_exists='replace')
 
+    # Update USER_DB_UPLOADS_TBL
     tn = json.dumps(new_table_name)
     du = json.dumps(csv_url)
     un = json.dumps(requesting_user)
@@ -70,12 +76,40 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     except Exception as e: # On fail, rollback
         result = dbConnection.execute(f"DROP TABLE IF EXISTS {new_table_name}")
     dbConnection.close()
-    print(f"Success: Table Created: {new_table_name}")  # TODO: Do login work here
+    # print(f"Success: Table Created: {new_table_name}")  # TODO: Do login work here
+    db_logger.log_message(f"UAT Success: Created New Table {new_table_name} by {requesting_user}")
     return f"Success, Table Created: {new_table_name}"
 
 
+# UAT: Update/Overwrite Table, written in SQLA Core
+def update_table(table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
+    if table_name in reserved_tables:
+        return "Sorry, this is managed"
+    meta = sqlalchemy.MetaData()
+    dbConnection, engine = db_utils.db_connect(ret_engine=True)
+    user_uploads_table = sqlalchemy.Table(db_config.USER_DB_UPLOADS_TBL_NAME, meta, autoload_with=engine)
+    s = sqlalchemy.select(user_uploads_table).where(sqlalchemy.and_(user_uploads_table.c.username == requesting_user, user_uploads_table.c.table_name == table_name))
+    try:
+        result = dbConnection.execute(s)
+        if not result:
+            return db_return_codes.UNHANDLED_ERROR
+    except sqlalchemy.exc.IntegrityError as e:
+        db_logger.log_error(e, "Error: DB SELECT failed")
+        return db_return_codes.UAT_ERROR_SELECT_FAILED
+
+    if result.rowcount == 0:
+        return f"Error: no table {table_name} found created by {requesting_user}."
+
+    elif result.rowcount == 1: # Execute
+        table_name, target_url, username = result.fetchone()
+        df_table_replacement = pd.read_csv(target_url)
+        df_table_replacement.to_sql(table_name, dbConnection, if_exists='replace')
+        return f"Successfully updated table {table_name} from {target_url}"
+    else:
+        return f"Error: Multiple matches found under {table_name}, please contact an administrator."
+
 if __name__ == "__main__":
-    # update_vaccine_data()
-    create_new_table(vaccine_data_csv, vaccine_tbl_name, "TEST_USER_1")
-    # remove_user_table(vaccine_tbl_name, test_user)
-    pass
+    vaccine_data_csv = "https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv"
+    vaccine_tbl_name = "aoijsdofjasodjf"
+    # create_new_table(csv_url=vaccine_data_csv,new_table_name=vaccine_tbl_name,requesting_user="AA")
+    print(update_table(vaccine_tbl_name, "AA"))

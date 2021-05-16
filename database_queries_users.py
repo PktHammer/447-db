@@ -18,10 +18,10 @@ def insert_user(username: str, password: str):
         if not result:
             return db_return_codes.UNHANDLED_ERROR
     except sqlalchemy.exc.IntegrityError as e:
-        print(f"Attempted DB Creation of Duplicate username {username}")
+        #  print(f"Attempted DB Creation of Duplicate username {username}")
         db_logger.log_error(e, "Warning: Attempted DB Creation of Duplicate User Name")
         return db_return_codes.UA_INSERT_FAILED_DUPLICATE
-    print(f"User Accounts: Creation of username {username} successful.")
+    #  print(f"User Accounts: Creation of username {username} successful.")
     db_logger.log_message(f"User Accounts: Creation of username {username} successful.")
     return db_return_codes.UA_INSERT_SUCCESS
 
@@ -37,18 +37,21 @@ def delete_user(username: str, password: str):
         try:
             dbConnection.execute(user_accounts.delete().where(user_accounts.c.username == username))
             if not result:
-                print("Error: Unhandled DB Exception -- delete_user (No Result)")
+                #  print("Error: Unhandled DB Exception -- delete_user (No Result)")
                 return db_return_codes.UNHANDLED_ERROR
         except Exception as e:
-            print("Error: Unhandled DB Exception -- delete_user")
+            #  print("Error: Unhandled DB Exception -- delete_user")
             db_logger.log_error(e, "Error: Unhandled DB Exception -- delete_user")
             return db_return_codes.UNHANDLED_ERROR
         db_logger.log_message(f"User Accounts: Deletion of username {username} successful")
-        print(f"Deletion of user {username} successful")
+        #  print(f"Deletion of user {username} successful")
         return db_return_codes.UA_DELETE_USER_SUCCESS
-    else:
-        print("Delete User: Login Failed, cannot delete without valid un/pw")
+    elif result == db_return_codes.UA_LOGIN_FAILED:
+        #  print("Delete User: Login Failed, cannot delete without valid un/pw")
         return db_return_codes.UA_DELETE_USER_FAILED
+    else:
+        #  print("Error: Unhandled DB Exception -- delete_user")
+        db_logger.log_message("ERROR: Delete_User unhandled return type from query_user")
 
 
 def query_user(username: str, password: str):
@@ -67,12 +70,11 @@ def query_user(username: str, password: str):
 
     if result.rowcount == 0:  # If it doesn't match, it doesn't exist
         # Return false
-        print(f"Login Failed, returning {db_return_codes.UA_LOGIN_FAILED}")
+        #  print(f"Login Failed, returning {db_return_codes.UA_LOGIN_FAILED}")
         return db_return_codes.UA_LOGIN_FAILED
     else:
-        print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
+        #  print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
         return db_return_codes.UA_LOGIN_SUCCESS
 
-
 if __name__ == "__main__":
-    pass
+    insert_user("AA","AA")

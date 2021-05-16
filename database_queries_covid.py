@@ -32,17 +32,18 @@ def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: st
     return return_this
 
 
-def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str, var_b):
+def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = 'NA', where_clause: str = '',
+                var_a: str = '', var_b=''):
     dbConnection = db_utils.db_connect()
 
     # Set variable :: Ex: varA = "'2020-04-07'"
     setup = "SET @a = " + str(var_a) + ";"
-    print(setup)
+    # print(setup)
     result = dbConnection.execute(setup)
 
     # Set variable :: Ex: var_b =
     setup = "SET @b = " + str(var_b) + ";"
-    print(setup)
+    # print(setup)
     result = dbConnection.execute(setup)
 
     # Do query
@@ -67,28 +68,22 @@ def prepare_two(return_type: str, prepname: str, tbl_name: str, where_clause: st
 
 # Examples below
 if __name__ == "__main__":
+    pass
     # Return type can return a csv (csv) or print (print) or a dataframe (anything else)
     # prepname needs to be unique for the query -- TODO: actually prepare all queries and delete the prep creation lines
     # tbl_name is the name of the table in the database
     # where_clause is remaining sql to be executed -- variables will be assigned as ?s
     # var_a is the first variable (?) to be replaced
     # var_b is the second variable (?) to be replaced
-    prepare_one(return_type="print",
-                prepname="sdtest",
-                tbl_name="main_covid_data",
-                where_clause="where county=? limit 10",
-                var_a='"Alameda"')
-    prepare_two(return_type="print",
-                prepname="sdtest2",
-                tbl_name="main_covid_data",
-                where_clause="where county=? and date=? limit 10",
-                var_a='"Alameda"',
-                var_b="'2020-12-15'")
+    # Examples:
+    # prepare_one(return_type="print",
+    #             prepname="sdtest",
+    #             tbl_name="main_covid_data",
+    #             where_clause="where county=? limit 10",
+    #             var_a='"Alameda"')
     # prepare_two(return_type="print",
-    #             prepname="prison_data",
-    #             tbl_name="main_vaccine_by_cty",
-    #             where_clause="where county=? and administered_date=? limit 10",
+    #             prepname="sdtest2",
+    #             tbl_name="main_covid_data",
+    #             where_clause="where county=? and date=? limit 10",
     #             var_a='"Alameda"',
-    #             var_b="'2020-12-15'")  # Note, dates must be like "'2020-04-07'"
-
-
+    #             var_b="'2020-12-15'")
