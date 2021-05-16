@@ -23,9 +23,11 @@ def get_latest_update_covid(date: str) -> pd.DataFrame:
 
     return pd.read_sql(sql=sql, con=dbConnection, params={"var": date})
 
+
 def get_latest_update_prison(date: str) -> pd.DataFrame:
     dbConnection = db_utils.db_connect()
-    sql = '''SELECT t.name, t.date, t.address, t.county, t.residents_confirmed, t.staff_confirmed, t.residents_active, t.staff_active, t.residents_deaths, t.staff_deaths
+    sql = '''SELECT t.name, t.date, t.address, t.county, t.residents_confirmed, 
+    t.staff_confirmed, t.residents_active, t.staff_active, t.residents_deaths, t.staff_deaths
     FROM (
     SELECT name, MAX(date) as MaxDate
     FROM (
