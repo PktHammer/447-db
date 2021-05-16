@@ -20,7 +20,7 @@ def insert_user(username: str, password: str):
     except sqlalchemy.exc.IntegrityError as e:
         print("Attempted DB Creation of Duplicate User Name")
         db_logger.log_error(e, "Warning: Attempted DB Creation of Duplicate User Name")
-        return db_return_codes.UA_INSERT_DUPLICATE
+        return db_return_codes.UA_INSERT_FAILED_DUPLICATE
     db_logger.log_message(f"User Accounts: Creation of username {username} successful.")
     return db_return_codes.UA_INSERT_SUCCESS
 
@@ -44,6 +44,7 @@ def delete_user(username: str, password: str):
             return db_return_codes.UNHANDLED_ERROR
         db_logger.log_message(f"User Accounts: Deletion of username {username} successful")
         print(f"Deletion of user {username} successful")
+        return db_return_codes.UA_DELETE_USER_SUCCESS
     else:
         print("Delete User: Login Failed, cannot delete without valid un/pw")
         return db_return_codes.UA_DELETE_USER_FAILED
@@ -74,4 +75,3 @@ def query_user(username: str, password: str):
 
 if __name__ == "__main__":
     pass
-    # insert_user(ua, pw)
