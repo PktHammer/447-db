@@ -9,21 +9,17 @@ import json
 
 def get_latest_update(date: str) -> pd.DataFrame:
     dbConnection = db_utils.db_connect()
-    # sql = '''SELECT MAX(date), county, state, fips, cases, deaths
-    # from (SELECT * from main_covid_data where DATE(date)<= %(var)s) AS A
-    # group by county
-    # order by date;
-    # '''
 
+    # Gets the last valid date's data if exists and no data exists on the actual date
     sql = '''SELECT t.date, t.county, t.state, t.cases, t.deaths, r.MaxDate
-FROM (
-SELECT county, MAX(date) as MaxDate
-FROM (
-select * from main_covid_data where DATE(date)<= %(var)s) as A
-GROUP BY county
-) r 
-INNER JOIN main_covid_data t 
-ON t.county = r.county AND t.date = r.MaxDate'''
+    FROM (
+    SELECT county, MAX(date) as MaxDate
+    FROM (
+    select * from main_covid_data where DATE(date)<= %(var)s) as A
+    GROUP BY county
+    ) r 
+    INNER JOIN main_covid_data t 
+    ON t.county = r.county AND t.date = r.MaxDate'''
 
     return pd.read_sql(sql=sql, con=dbConnection, params={"var": date})
 
