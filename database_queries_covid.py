@@ -3,7 +3,22 @@ import pymysql
 import pandas as pd
 import db_config
 import db_utils
+import sqlalchemy
+import json
 
+'''SELECT MAX(date), county, state, fips, cases, deaths 
+from (SELECT * from main_covid_data where DATE(date)<="2021-01-28") AS A 
+group by county 
+order by date;'''
+
+def get_latest_update(date: str) -> pd.DataFrame:
+    dbConnection = db_utils.db_connect()
+    sql = '''SELECT MAX(date), county, state, fips, cases, deaths 
+    from (SELECT * from main_covid_data where DATE(date)<= %(var)s) AS A 
+    group by county 
+    order by date;
+    '''
+    return pd.read_sql(sql=sql,con=dbConnection, params={"var": date})
 
 def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str):
     dbConnection = db_utils.db_connect()
@@ -68,7 +83,13 @@ def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = '
 
 # Examples below
 if __name__ == "__main__":
-    pass
+    date = "2021-01-28"
+    print(get_latest_update(date))
+    # prepare_one(return_type="print",
+    #             prepname="whatv",
+    #             tbl_name="main_covid_data",
+    #             where_clause="where DATE(date)<=? ORDER BY date desc",
+    #             var_a="'2021-01-28'")
     # Return type can return a csv (csv) or print (print) or a dataframe (anything else)
     # prepname needs to be unique for the query -- TODO: actually prepare all queries and delete the prep creation lines
     # tbl_name is the name of the table in the database
