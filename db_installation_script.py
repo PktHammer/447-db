@@ -66,7 +66,11 @@ def full_install():
     response = input(f"Do you want to set up the database?")
     if response in confirms:
         setup_database()
-
+    import db_table_initializers
+    response = input(f"Do you want to set up the database tables?")
+    if response in confirms:
+        db_table_initializers.initialize_user_table()
+        db_table_initializers.initialize_user_db_uploads()
 
 if __name__ == "__main__":
     full_install()
