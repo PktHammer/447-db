@@ -33,5 +33,3 @@ def initialize_user_db_uploads() -> None:
 
 if __name__ == "__main__":
     pass
-    # initialize_user_table()
-    # initialize_user_db_uploads()

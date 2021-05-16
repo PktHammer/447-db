@@ -11,5 +11,3 @@ def db_connect(ret_engine=False):
         return dbConnection
     else:
         return dbConnection, engine
-
-# load_table - Loads proper into var

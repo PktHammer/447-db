@@ -197,3 +197,5 @@ if __name__ == "__main__":
     failed_test_list.extend(db_main_query_tests())
     failed_test_list.extend(db_UAT_tests())
     print(f"Failing tests: " + str(failed_test_list))
+    if len(failed_test_list) > 0:
+        db_logger.log_message(f"Failing tests: {str(failed_test_list)}")

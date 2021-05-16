@@ -44,6 +44,7 @@ def setup_database():
               f"FLUSH PRIVILEGES;'")
     pass
 
+
 # Sets up prereqs
 def setup_prereqs():
     os.system(f"apt install python3-pip")
@@ -52,6 +53,7 @@ def setup_prereqs():
     os.system(f"python3 -m pip install pandas")
     os.system(f"python3 -m pip install PyMySQL")
     os.system(f"python3 -m pip install PyMySQL[ed25519]")
+
 
 # Full installation
 def full_install():
