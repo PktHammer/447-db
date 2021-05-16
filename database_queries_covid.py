@@ -6,19 +6,27 @@ import db_utils
 import sqlalchemy
 import json
 
-'''SELECT MAX(date), county, state, fips, cases, deaths 
-from (SELECT * from main_covid_data where DATE(date)<="2021-01-28") AS A 
-group by county 
-order by date;'''
 
 def get_latest_update(date: str) -> pd.DataFrame:
     dbConnection = db_utils.db_connect()
-    sql = '''SELECT MAX(date), county, state, fips, cases, deaths 
-    from (SELECT * from main_covid_data where DATE(date)<= %(var)s) AS A 
-    group by county 
-    order by date;
-    '''
-    return pd.read_sql(sql=sql,con=dbConnection, params={"var": date})
+    # sql = '''SELECT MAX(date), county, state, fips, cases, deaths
+    # from (SELECT * from main_covid_data where DATE(date)<= %(var)s) AS A
+    # group by county
+    # order by date;
+    # '''
+
+    sql = '''SELECT t.date, t.county, t.state, t.cases, t.deaths, r.MaxDate
+FROM (
+SELECT county, MAX(date) as MaxDate
+FROM (
+select * from main_covid_data where DATE(date)<= %(var)s) as A
+GROUP BY county
+) r 
+INNER JOIN main_covid_data t 
+ON t.county = r.county AND t.date = r.MaxDate'''
+
+    return pd.read_sql(sql=sql, con=dbConnection, params={"var": date})
+
 
 def prepare_one(return_type: str, prepname: str, tbl_name: str, where_clause: str, var_a: str):
     dbConnection = db_utils.db_connect()
@@ -83,7 +91,7 @@ def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = '
 
 # Examples below
 if __name__ == "__main__":
-    date = "2021-01-28"
+    date = "2020-03-09"
     print(get_latest_update(date))
     # prepare_one(return_type="print",
     #             prepname="whatv",
