@@ -1,9 +1,6 @@
 import pandas as pd
-from sqlalchemy import create_engine
-import sqlalchemy
 import db_logger
 import db_utils
-import db_tests
 from db_return_codes import *
 from db_config import *
 
@@ -63,11 +60,6 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
                             err_type="DB_db_connect error",
                             optional_message="")
         return RETURN_ERROR_DB_CONNECT
-
-    # # TODO: REMOVE INTERACTIVE TESTING WHEN READY
-    # console = code.InteractiveConsole(dict(globals(), **locals()))
-    # console.interact('Interactive shell for %s' %
-    #                  os.path.basename(sys.argv[0]))
 
     # Update
     try:

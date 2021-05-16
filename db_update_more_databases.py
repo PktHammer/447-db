@@ -1,14 +1,10 @@
 import pandas as pd
-from sqlalchemy import create_engine
 import db_config
-import datetime
 import sqlalchemy
 import db_utils
 import json
 import db_logger
 import db_return_codes
-
-import utils_debug
 
 reserved_tables = [{db_config.COVID_DATA_TBL_NAME},
                    {db_config.PRISON_DATA_TBL_NAME},
@@ -108,8 +104,6 @@ def update_table(table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
     else:
         return f"Error: Multiple matches found under {table_name}, please contact an administrator."
 
+
 if __name__ == "__main__":
-    vaccine_data_csv = "https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv"
-    vaccine_tbl_name = "aoijsdofjasodjf"
-    # create_new_table(csv_url=vaccine_data_csv,new_table_name=vaccine_tbl_name,requesting_user="AA")
-    print(update_table(vaccine_tbl_name, "AA"))
+    pass

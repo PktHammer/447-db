@@ -76,5 +76,7 @@ def query_user(username: str, password: str):
         #  print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
         return db_return_codes.UA_LOGIN_SUCCESS
 
+
 if __name__ == "__main__":
-    insert_user("AA","AA")
+    pass
+

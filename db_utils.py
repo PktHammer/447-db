@@ -1,6 +1,5 @@
 import sqlalchemy
 import db_config
-import pymysql.cursors
 
 
 # db_connect - Logs in with the main user

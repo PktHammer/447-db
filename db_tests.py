@@ -1,8 +1,8 @@
 import requests
 import db_config
-import db_utils
+# import db_utils
 import db_logger
-import db_update_database
+# import db_update_database
 import db_update_more_databases
 import database_queries_covid
 import database_queries_users as database_queries_users

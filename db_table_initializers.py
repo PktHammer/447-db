@@ -1,8 +1,6 @@
 import db_config
 import db_utils
-import json
-import pandas as pd
-# debug
+
 
 #########################
 # Table initializations
