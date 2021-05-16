@@ -77,6 +77,30 @@ def query_user(username: str, password: str):
         return db_return_codes.UA_LOGIN_SUCCESS
 
 
+def get_user_hash(username: str):
+    meta = sqlalchemy.MetaData()
+    dbConnection, engine = db_utils.db_connect(ret_engine=True)
+    user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
+    s = sqlalchemy.select(user_accounts).where(user_accounts.c.username == username)
+    try:
+        result = dbConnection.execute(s)
+        if not result:
+            return db_return_codes.UNHANDLED_ERROR
+    except sqlalchemy.exc.IntegrityError as e:
+        db_logger.log_error(e, "Error: DB SELECT Failed")
+        return db_return_codes.UA_ERROR_SELECT_FAILED
+    if result.rowcount == 0:  # If it doesn't match, it doesn't exist
+        # Return false
+        #  print(f"Login Failed, returning {db_return_codes.UA_LOGIN_FAILED}")
+        return db_return_codes.UA_LOGIN_FAILED
+    elif result.rowcount == 1:  # Execute
+        username, password = result.fetchone()
+    else:
+        #  print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
+        return db_return_codes.UNHANDLED_ERROR
+    return password
+
+
 if __name__ == "__main__":
     pass
 
