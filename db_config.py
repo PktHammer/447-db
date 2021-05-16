@@ -13,10 +13,10 @@ LOG_LOCATION_DB_TESTS = "./db_test.log"
 
 #######################
 # Table names
-COVID_DATA_TABLE_NAME = "main_covid_data"
-PRISON_DATA_TABLE_NAME = "main_prison_data"
-USER_DB_UPLOADS = "user_db_uploads"
-USER_ACCOUNTS = "covid_user_accounts"
+COVID_DATA_TBL_NAME = "main_covid_data"
+PRISON_DATA_TBL_NAME = "main_prison_data"
+USER_DB_UPLOADS_TBL_NAME = "user_db_uploads"
+USER_ACCOUNTS_TBL_NAME = "covid_user_accounts"
 
 #######################
 # Source Data URLs
@@ -24,7 +24,7 @@ MAIN_COVID_DATA_URL = "https://raw.githubusercontent.com/nytimes/covid-19-data/m
 MAIN_PRISON_DATA_URL = "https://raw.githubusercontent.com/uclalawcovid19behindbars/historical-data/main/data/CA-historical-data.csv"
 
 #######################
-# Defined Data Types
+# Defined Data Types for Managed Tables
 DTYPE_COVID_DATA = {
     "date": sqlalchemy.types.DATE,
     "county": sqlalchemy.types.VARCHAR(length=50),

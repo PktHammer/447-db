@@ -4,7 +4,7 @@ import sqlalchemy
 import db_logger
 import db_utils
 import db_tests
-from db_err_codes import *
+from db_return_codes import *
 from db_config import *
 
 
@@ -71,8 +71,8 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
 
     # Update
     try:
-        df_covid.to_sql(COVID_DATA_TABLE_NAME, dbConnection, if_exists='replace', dtype=DTYPE_COVID_DATA)
-        df_prison.to_sql(PRISON_DATA_TABLE_NAME, dbConnection, if_exists='replace', dtype=DTYPE_PRISON_DATA)
+        df_covid.to_sql(COVID_DATA_TBL_NAME, dbConnection, if_exists='replace', dtype=DTYPE_COVID_DATA)
+        df_prison.to_sql(PRISON_DATA_TBL_NAME, dbConnection, if_exists='replace', dtype=DTYPE_PRISON_DATA)
     except TypeError as e:  # Table not properly made
         print("Error, table creation failed, data processing likely required")
         db_logger.log_error(exception=e,

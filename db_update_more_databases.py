@@ -6,10 +6,10 @@ import sqlalchemy
 import db_utils
 import json
 
-reserved_tables = [{db_config.COVID_DATA_TABLE_NAME},
-                   {db_config.PRISON_DATA_TABLE_NAME},
-                   {db_config.USER_DB_UPLOADS},
-                   {db_config.USER_ACCOUNTS}]
+reserved_tables = [{db_config.COVID_DATA_TBL_NAME},
+                   {db_config.PRISON_DATA_TBL_NAME},
+                   {db_config.USER_DB_UPLOADS_TBL_NAME},
+                   {db_config.USER_ACCOUNTS_TBL_NAME}]
 
 # Test csv
 vaccine_data_csv = "https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv"
@@ -20,11 +20,11 @@ def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFI
     dbConnection = db_utils.db_connect()
     tn = json.dumps(rm_table_name)
     un = json.dumps(requesting_user)
-    result = pd.read_sql(f"SELECT table_name FROM {db_config.USER_DB_UPLOADS} where table_name={tn} and username={un};", dbConnection)
+    result = pd.read_sql(f"SELECT table_name FROM {db_config.USER_DB_UPLOADS_TBL_NAME} where table_name={tn} and username={un};", dbConnection)
     if not result.empty:
         delete_this_table = result['table_name'].tolist()[0]
         dbConnection.execute(f"DROP TABLE IF EXISTS {delete_this_table}")
-        dbConnection.execute(f"DELETE FROM {db_config.USER_DB_UPLOADS} WHERE table_name={tn}")
+        dbConnection.execute(f"DELETE FROM {db_config.USER_DB_UPLOADS_TBL_NAME} WHERE table_name={tn}")
         print(f"Success: Deleted Table {delete_this_table}")
         return f"Success: Deleted Table {delete_this_table}"
     else:
@@ -41,7 +41,7 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     dbConnection = db_utils.db_connect()
 
     # Check if table is in used_tables
-    result = pd.read_sql(f"SELECT table_name FROM {db_config.USER_DB_UPLOADS};", dbConnection)
+    result = pd.read_sql(f"SELECT table_name FROM {db_config.USER_DB_UPLOADS_TBL_NAME};", dbConnection)
     list_of_used_tables = result['table_name'].tolist()
     if new_table_name in list_of_used_tables:
         # Fail
@@ -65,7 +65,7 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     un = json.dumps(requesting_user)
 
     try:
-        result = dbConnection.execute(f"INSERT INTO {db_config.USER_DB_UPLOADS}(table_name, data_url, username) "
+        result = dbConnection.execute(f"INSERT INTO {db_config.USER_DB_UPLOADS_TBL_NAME}(table_name, data_url, username) "
                                       f"VALUES ({tn}, {du}, {un});")
     except Exception as e: # On fail, rollback
         result = dbConnection.execute(f"DROP TABLE IF EXISTS {new_table_name}")

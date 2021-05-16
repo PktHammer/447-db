@@ -1,88 +1,77 @@
 from sqlalchemy import create_engine
+import sqlalchemy
 import pymysql
 import pandas as pd
 import db_config
 import db_utils
-
-# Set UN/PW
-
-# Global error codes
-# Insert PW
-ERRNO_PW_EXISTS = -1
-# Query User
-ERROR_USER_DNE = -2
-
-
+import db_return_codes
+import db_logger
 
 
 def insert_user(username: str, password: str):
-    # Error message
-    ERROR_MESSAGE = "Sorry, this username has been taken"
-
-    # Connect
-    dbConnection = db_utils.db_connect()
-
-    # Setup
-    stmt = "SET @a = \'" + username + "\';"
-    # print(stmt)
-    result = dbConnection.execute(stmt)
-    stmt = "SET @b = \'" + password + "\';"
-    result = dbConnection.execute(stmt)
-    # print(stmt)
-
-    # Query if UN exists
-    #result = dbConnection.execute(f"SELECT * from covid_user_accounts where username=\"{username}\";")
-    #print(f"The result: {result}")
-
-    # TODO: Prepared Query (Needs to be moved to a permanent prepare slot)
-    result = dbConnection.execute("PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=?;';")
-    result = pd.read_sql("EXECUTE cov_att_login using @a;", dbConnection)
-
-    # If the UN exists, fail
-    fail = True
-    if result.empty:
-        fail = False
-    if fail:
-        print(ERROR_MESSAGE)
-        dbConnection.close()
-        return ERRNO_PW_EXISTS
-
-    # If UN DNE, set UN/PW
-    print("Here")
-    result = dbConnection.execute("INSERT INTO covid_user_accounts(username, password) VALUES (@a,@b)")
-    # dbConnection.execute(
-    #     "PREPARE cov_insert_user from 'INSERT INTO covid_user_accounts (username, password) VALUES (?,?);';")
-    # result = dbConnection.execute("EXECUTE cov_insert_user using @a, @b;")
-    dbConnection.close()
-    return 1
+    meta = sqlalchemy.MetaData()
+    dbConnection, engine = db_utils.db_connect(ret_engine=True)
+    user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
+    ins = user_accounts.insert().values(username=username, password=password)
+    try:
+        result = dbConnection.execute(ins)
+        if not result:
+            return db_return_codes.UNHANDLED_ERROR
+    except sqlalchemy.exc.IntegrityError as e:
+        print("Attempted DB Creation of Duplicate User Name")
+        db_logger.log_error(e, "Warning: Attempted DB Creation of Duplicate User Name")
+        return db_return_codes.UA_INSERT_DUPLICATE
+    db_logger.log_message(f"User Accounts: Creation of username {username} successful.")
+    return db_return_codes.UA_INSERT_SUCCESS
 
 
-# Get UN/PW
-def query_user(username, password):
-    dbConnection = db_utils.db_connect()
-
-    # Setup username/pw
-    stmt = "SET @a = \'" + username + "\';"
-    result = dbConnection.execute(stmt)
-    stmt = "SET @b = \'" + password + "\';"
-    result = dbConnection.execute(stmt)
-
-    # Query for username and password match
-    # TODO: Prepared Query (Needs to be moved to a permanent prepare slot)
-    result = dbConnection.execute(
-        "PREPARE cov_att_login from 'SELECT * from covid_user_accounts where username=? AND password=?;';")
-    result = pd.read_sql("EXECUTE cov_att_login using @a, @b;", dbConnection)
-    if result.empty:
-        # Failed login, return error
-        dbConnection.close()
-        return ERROR_USER_DNE
+def delete_user(username: str, password: str):
+    # Check if the password is valid
+    result = query_user(username=username, password=password)
+    if result == db_return_codes.UA_LOGIN_SUCCESS:
+        # Delete
+        meta = sqlalchemy.MetaData()
+        dbConnection, engine = db_utils.db_connect(ret_engine=True)
+        user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
+        try:
+            dbConnection.execute(user_accounts.delete().where(user_accounts.c.username == username))
+            if not result:
+                print("Error: Unhandled DB Exception -- delete_user (No Result)")
+                return db_return_codes.UNHANDLED_ERROR
+        except Exception as e:
+            print("Error: Unhandled DB Exception -- delete_user")
+            db_logger.log_error(e, "Error: Unhandled DB Exception -- delete_user")
+            return db_return_codes.UNHANDLED_ERROR
+        db_logger.log_message(f"User Accounts: Deletion of username {username} successful")
+        print(f"Deletion of user {username} successful")
     else:
-        # Successful login, return token perhaps?  (SESS_ID token?)
-        print("Remove me when this is completed")  # TODO: Do login work here
-    # print("T4")
-    dbConnection.close()
-    return 1
+        print("Delete User: Login Failed, cannot delete without valid un/pw")
+        return db_return_codes.UA_DELETE_USER_FAILED
+
+
+def query_user(username: str, password: str):
+    meta = sqlalchemy.MetaData()
+    dbConnection, engine = db_utils.db_connect(ret_engine=True)
+    user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
+    s = sqlalchemy.select(user_accounts.c.username).where(
+        sqlalchemy.and_(user_accounts.c.username == username, user_accounts.c.password == password))
+    try:
+        result = dbConnection.execute(s)
+        if not result:
+            return db_return_codes.UNHANDLED_ERROR
+    except sqlalchemy.exc.IntegrityError as e:
+        db_logger.log_error(e, "Error: DB SELECT Failed")
+        return db_return_codes.UA_ERROR_SELECT_FAILED
+
+    if result.rowcount == 0:  # If it doesn't match, it doesn't exist
+        # Return false
+        print(f"Login Failed, returning {db_return_codes.UA_LOGIN_FAILED}")
+        return db_return_codes.UA_LOGIN_FAILED
+    else:
+        print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
+        return db_return_codes.UA_LOGIN_SUCCESS
 
 
 if __name__ == "__main__":
-    print("RC: " + str(insert_user("AA", "AA")))
+    pass
+    # insert_user(ua, pw)
