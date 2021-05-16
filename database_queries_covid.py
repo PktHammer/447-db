@@ -11,11 +11,11 @@ def get_latest_update(date: str) -> pd.DataFrame:
     dbConnection = db_utils.db_connect()
 
     # Gets the last valid date's data if exists and no data exists on the actual date
-    sql = '''SELECT t.date, t.county, t.state, t.cases, t.deaths, r.MaxDate
+    sql = '''SELECT t.date, t.county, t.state, t.cases, t.deaths
     FROM (
     SELECT county, MAX(date) as MaxDate
     FROM (
-    select * from main_covid_data where DATE(date)<= %(var)s) as A
+    select date, county, state,cases, deaths from main_covid_data where DATE(date)<= %(var)s) as A
     GROUP BY county
     ) r 
     INNER JOIN main_covid_data t 
@@ -87,7 +87,7 @@ def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = '
 
 # Examples below
 if __name__ == "__main__":
-    date = "2020-03-09"
+    date = "2025-03-09"
     print(get_latest_update(date))
     # prepare_one(return_type="print",
     #             prepname="whatv",
