@@ -4,6 +4,7 @@ import db_config
 import pandas as pd
 
 
+# Drops all tables given a list (WARNING: WILL DROP ANY TABLE, ADMIN ONLY)
 def admin_drop_all_tables_in_list(list_of_table_names: list) -> None:
     dbConnection = db_utils.db_connect()
     for item in list_of_table_names:
@@ -13,6 +14,7 @@ def admin_drop_all_tables_in_list(list_of_table_names: list) -> None:
     dbConnection.close()
 
 
+# Get all user added tables created by username "username"
 def admin_get_user_tables_by_un(username: str) -> list:
     dbConnection = db_utils.db_connect()
     username_parsed = json.dumps(username)
@@ -23,6 +25,7 @@ def admin_get_user_tables_by_un(username: str) -> list:
     return result['table_name'].tolist()
 
 
+# Lists all user added tables
 def admin_get_all_user_tables() -> list:
     dbConnection = db_utils.db_connect()
     # Check if table is in used_tables
@@ -31,11 +34,13 @@ def admin_get_all_user_tables() -> list:
     return result['table_name'].tolist()
 
 
+# Drops every user added table
 def admin_drop_all_user_tables() -> None:
     list_of_user_tables = admin_get_all_user_tables()
     admin_drop_all_tables_in_list(list_of_user_tables)
 
 
+# Drops all user tables created by "username"
 def admin_drop_all_user_tables_by_un(username: str) -> None:
     tables_to_drop = admin_get_user_tables_by_un(username=username)
     admin_drop_all_tables_in_list(list_of_table_names=tables_to_drop)

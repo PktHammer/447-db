@@ -18,9 +18,10 @@ def insert_user(username: str, password: str):
         if not result:
             return db_return_codes.UNHANDLED_ERROR
     except sqlalchemy.exc.IntegrityError as e:
-        print("Attempted DB Creation of Duplicate User Name")
+        print(f"Attempted DB Creation of Duplicate username {username}")
         db_logger.log_error(e, "Warning: Attempted DB Creation of Duplicate User Name")
         return db_return_codes.UA_INSERT_FAILED_DUPLICATE
+    print(f"User Accounts: Creation of username {username} successful.")
     db_logger.log_message(f"User Accounts: Creation of username {username} successful.")
     return db_return_codes.UA_INSERT_SUCCESS
 
