@@ -7,7 +7,7 @@ import sqlalchemy
 import json
 
 
-def get_latest_update(date: str) -> pd.DataFrame:
+def get_latest_update_covid(date: str) -> pd.DataFrame:
     dbConnection = db_utils.db_connect()
 
     # Gets the last valid date's data if exists and no data exists on the actual date
@@ -21,6 +21,19 @@ def get_latest_update(date: str) -> pd.DataFrame:
     INNER JOIN main_covid_data t 
     ON t.county = r.county AND t.date = r.MaxDate'''
 
+    return pd.read_sql(sql=sql, con=dbConnection, params={"var": date})
+
+def get_latest_update_prison(date: str) -> pd.DataFrame:
+    dbConnection = db_utils.db_connect()
+    sql = '''SELECT t.name, t.date, t.address, t.county, t.residents_confirmed, t.staff_confirmed, t.residents_active, t.staff_active, t.residents_deaths, t.staff_deaths
+    FROM (
+    SELECT name, MAX(date) as MaxDate
+    FROM (
+    select * from main_prison_data where DATE(date)<= %(var)s) as A 
+    GROUP BY name 
+    ) r 
+    INNER JOIN main_prison_data t
+    ON t.name = r.name AND t.date = r.MaxDate'''
     return pd.read_sql(sql=sql, con=dbConnection, params={"var": date})
 
 
@@ -88,7 +101,10 @@ def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = '
 # Examples below
 if __name__ == "__main__":
     date = "2025-03-09"
-    print(get_latest_update(date))
+    print(get_latest_update_covid(date))
+    print(get_latest_update_prison(date))
+    df = get_latest_update_prison(date)
+    df.to_csv("output.txt")
     # prepare_one(return_type="print",
     #             prepname="whatv",
     #             tbl_name="main_covid_data",
