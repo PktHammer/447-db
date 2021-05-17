@@ -71,12 +71,10 @@ def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = '
 
     # Set variable :: Ex: varA = "'2020-04-07'"
     setup = "SET @a = " + str(var_a) + ";"
-    # print(setup)
     result = dbConnection.execute(setup)
 
-    # Set variable :: Ex: var_b =
+    # Set variable
     setup = "SET @b = " + str(var_b) + ";"
-    # print(setup)
     result = dbConnection.execute(setup)
 
     # Do query

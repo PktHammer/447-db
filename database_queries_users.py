@@ -18,10 +18,8 @@ def insert_user(username: str, password: str):
         if not result:
             return db_return_codes.UNHANDLED_ERROR
     except sqlalchemy.exc.IntegrityError as e:
-        #  print(f"Attempted DB Creation of Duplicate username {username}")
         db_logger.log_error(e, "Warning: Attempted DB Creation of Duplicate User Name")
         return db_return_codes.UA_INSERT_FAILED_DUPLICATE
-    #  print(f"User Accounts: Creation of username {username} successful.")
     db_logger.log_message(f"User Accounts: Creation of username {username} successful.")
     return db_return_codes.UA_INSERT_SUCCESS
 
@@ -37,20 +35,15 @@ def delete_user(username: str, password: str):
         try:
             dbConnection.execute(user_accounts.delete().where(user_accounts.c.username == username))
             if not result:
-                #  print("Error: Unhandled DB Exception -- delete_user (No Result)")
                 return db_return_codes.UNHANDLED_ERROR
         except Exception as e:
-            #  print("Error: Unhandled DB Exception -- delete_user")
             db_logger.log_error(e, "Error: Unhandled DB Exception -- delete_user")
             return db_return_codes.UNHANDLED_ERROR
         db_logger.log_message(f"User Accounts: Deletion of username {username} successful")
-        #  print(f"Deletion of user {username} successful")
         return db_return_codes.UA_DELETE_USER_SUCCESS
     elif result == db_return_codes.UA_LOGIN_FAILED:
-        #  print("Delete User: Login Failed, cannot delete without valid un/pw")
         return db_return_codes.UA_DELETE_USER_FAILED
     else:
-        #  print("Error: Unhandled DB Exception -- delete_user")
         db_logger.log_message("ERROR: Delete_User unhandled return type from query_user")
 
 
@@ -69,15 +62,12 @@ def query_user(username: str, password: str):
         return db_return_codes.UA_ERROR_SELECT_FAILED
 
     if result.rowcount == 0:  # If it doesn't match, it doesn't exist
-        # Return false
-        #  print(f"Login Failed, returning {db_return_codes.UA_LOGIN_FAILED}")
         return db_return_codes.UA_LOGIN_FAILED
     else:
-        #  print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
         return db_return_codes.UA_LOGIN_SUCCESS
 
 
-def get_user_hash(username: str) -> tuple:
+def get_user_hash(username: str) -> tuple: # (retcode, data)
     meta = sqlalchemy.MetaData()
     dbConnection, engine = db_utils.db_connect(ret_engine=True)
     user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
@@ -91,12 +81,10 @@ def get_user_hash(username: str) -> tuple:
         return db_return_codes.UA_ERROR_SELECT_FAILED, 0
     if result.rowcount == 0:  # If it doesn't match, it doesn't exist
         # Return false
-        #  print(f"Login Failed, returning {db_return_codes.UA_LOGIN_FAILED}")
         return db_return_codes.UA_LOGIN_FAILED, 0
     elif result.rowcount == 1:  # Execute
         username, password = result.fetchone()
     else:
-        #  print(f"login Success, returning {db_return_codes.UA_LOGIN_SUCCESS}")
         return db_return_codes.UNHANDLED_ERROR
     return db_return_codes.UA_QUERY_SUCCESS, password
 

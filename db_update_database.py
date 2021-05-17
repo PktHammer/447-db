@@ -66,7 +66,6 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
         df_covid.to_sql(COVID_DATA_TBL_NAME, dbConnection, if_exists='replace', dtype=DTYPE_COVID_DATA)
         df_prison.to_sql(PRISON_DATA_TBL_NAME, dbConnection, if_exists='replace', dtype=DTYPE_PRISON_DATA)
     except TypeError as e:  # Table not properly made
-        # print("Error, table creation failed, data processing likely required")
         db_logger.log_error(exception=e,
                             err_type="DB_TOSQL_Table_Creation Error",
                             optional_message="Fixing data processing likely required")
@@ -80,7 +79,6 @@ def update() -> int:  # int-type error codes listed above.  All negative values 
         db_logger.log_error(exception=e,
                             err_type="DB_TOSQL_Unknown Error",
                             optional_message="Unknown error received")
-        # print("Unknown error")
         return RETURN_ERROR_TOSQL
 
     # Close conn

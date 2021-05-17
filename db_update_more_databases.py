@@ -22,11 +22,9 @@ def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFI
         delete_this_table = result['table_name'].tolist()[0]
         dbConnection.execute(f"DROP TABLE IF EXISTS {delete_this_table}")
         dbConnection.execute(f"DELETE FROM {db_config.USER_DB_UPLOADS_TBL_NAME} WHERE table_name={tn}")
-        # print(f"Success: Deleted Table {delete_this_table}")
         db_logger.log_message(f"Success: Deleted Table {delete_this_table}, requesting_user={requesting_user}")
         return f"Success: Deleted Table {delete_this_table}"
     else:
-        # print(f"Invalid delete")
         db_logger.log_message(f"Invalid Delete of table {rm_table_name}, requesting_user={requesting_user}")
         return f"Invalid delete of table {rm_table_name}"
 
@@ -72,7 +70,6 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
     except Exception as e: # On fail, rollback
         result = dbConnection.execute(f"DROP TABLE IF EXISTS {new_table_name}")
     dbConnection.close()
-    # print(f"Success: Table Created: {new_table_name}")  # TODO: Do login work here
     db_logger.log_message(f"UAT Success: Created New Table {new_table_name} by {requesting_user}")
     return f"Success, Table Created: {new_table_name}"
 
