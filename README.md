@@ -19,8 +19,8 @@
 ### Database Auxiliary Files
 * db_config
     * Configuration items including table names, log directories, managed database csv URLs, etc.
-* db_err_codes
-    * List of error codes
+* db_return_codes
+    * List of return codes (including error codes)
 * db_logger
     * Basic logger with UUID1 tags
 
@@ -36,7 +36,7 @@
 
 ### User Table Items
 * db_update_more_databases
-    * Functions to add/remove items from the 
+    * Functions to add/remove items from the user tables
 * db_management
     * Administrative functions to forcibly clear the user database tables
 

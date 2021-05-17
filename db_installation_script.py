@@ -72,5 +72,6 @@ def full_install():
         db_table_initializers.initialize_user_table()
         db_table_initializers.initialize_user_db_uploads()
 
+
 if __name__ == "__main__":
     full_install()

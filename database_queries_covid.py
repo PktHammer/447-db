@@ -15,12 +15,11 @@ def get_latest_update_covid(date: str) -> pd.DataFrame:
     FROM (
     SELECT county, MAX(date) as MaxDate
     FROM (
-    select date, county, state,cases, deaths from main_covid_data where DATE(date)<= %(var)s) as A
+    SELECT date, county, state, cases, deaths from main_covid_data where DATE(date)<= %(var)s) as A
     GROUP BY county
     ) r 
     INNER JOIN main_covid_data t 
     ON t.county = r.county AND t.date = r.MaxDate'''
-
     return pd.read_sql(sql=sql, con=dbConnection, params={"var": date})
 
 
@@ -31,7 +30,7 @@ def get_latest_update_prison(date: str) -> pd.DataFrame:
     FROM (
     SELECT name, MAX(date) as MaxDate
     FROM (
-    select * from main_prison_data where DATE(date)<= %(var)s) as A 
+    SELECT * from main_prison_data where DATE(date)<= %(var)s) as A 
     GROUP BY name 
     ) r 
     INNER JOIN main_prison_data t
@@ -102,11 +101,14 @@ def prepare_two(return_type: str = 'df', prepname: str = 'NA', tbl_name: str = '
 
 # Examples below
 if __name__ == "__main__":
-    date = "2025-03-09"
-    print(get_latest_update_covid(date))
-    print(get_latest_update_prison(date))
-    df = get_latest_update_prison(date)
-    df.to_csv("output.txt")
+    pass
+    # Examples for get_latest_update:
+    # date = "2025-03-09"
+    # print(get_latest_update_covid(date))
+    # print(get_latest_update_prison(date))
+    # df = get_latest_update_prison(date)
+    # df.to_csv("output.txt")
+    # Examples for prepare one / two:
     # prepare_one(return_type="print",
     #             prepname="whatv",
     #             tbl_name="main_covid_data",
