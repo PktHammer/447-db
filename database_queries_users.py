@@ -103,4 +103,3 @@ def get_user_hash(username: str) -> tuple:
 
 if __name__ == "__main__":
     pass
-
