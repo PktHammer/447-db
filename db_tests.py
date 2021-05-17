@@ -18,9 +18,12 @@ vaccine_tbl_name = "main_vaccine_by_cty"
 
 #######################
 # Test Helper Functions
+
+support_set = string.ascii_letters + string.digits + string.punctuation
+
 def generate_user():
-    test_user_un = ''.join(random.choice(string.ascii_letters) for i in range(100))
-    test_user_pw = ''.join(random.choice(string.ascii_letters) for i in range(60))
+    test_user_un = ''.join(random.choice(support_set) for i in range(100))
+    test_user_pw = ''.join(random.choice(support_set) for i in range(60))
     return test_user_un, test_user_pw
 
 
