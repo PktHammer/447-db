@@ -1,3 +1,4 @@
 db_gen_secret.py
 db.log
+db_test.log
 utils_debug.py
