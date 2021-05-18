@@ -9,6 +9,7 @@ import database_queries_users as database_queries_users
 import random
 import string
 import db_return_codes
+from typing import Tuple
 
 #######################
 # Arbitrary settings that may need to be changed in the future
@@ -21,7 +22,8 @@ test_tbl_name = "oaisjdfoajsodifjoaiwaskdjfei"
 
 support_set = string.ascii_letters + string.digits + string.punctuation
 
-def generate_user():
+
+def generate_user() -> Tuple[str, str]:
     test_user_un = ''.join(random.choice(support_set) for i in range(100))
     test_user_pw = ''.join(random.choice(support_set) for i in range(60))
     return test_user_un, test_user_pw
@@ -150,10 +152,8 @@ def db_main_query_tests() -> list:
     return failed_tests
 
 
-def db_UAT_tests():
+def db_UAT_tests() -> list:
     failed_tests = []
-    # Test csv
-
 
     test_username, test_password = generate_user()
 

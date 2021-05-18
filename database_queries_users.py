@@ -6,9 +6,10 @@ import db_config
 import db_utils
 import db_return_codes
 import db_logger
+from typing import Union, Tuple
 
 
-def insert_user(username: str, password: str):
+def insert_user(username: str, password: str) -> int:
     meta = sqlalchemy.MetaData()
     dbConnection, engine = db_utils.db_connect(ret_engine=True)
     user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
@@ -24,7 +25,7 @@ def insert_user(username: str, password: str):
     return db_return_codes.UA_INSERT_SUCCESS
 
 
-def delete_user(username: str, password: str):
+def delete_user(username: str, password: str) -> Union[str, int]:
     # Check if the password is valid
     result = query_user(username=username, password=password)
     if result == db_return_codes.UA_LOGIN_SUCCESS:
@@ -47,7 +48,7 @@ def delete_user(username: str, password: str):
         db_logger.log_message("ERROR: Delete_User unhandled return type from query_user")
 
 
-def query_user(username: str, password: str):
+def query_user(username: str, password: str) -> int:
     meta = sqlalchemy.MetaData()
     dbConnection, engine = db_utils.db_connect(ret_engine=True)
     user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)
@@ -67,7 +68,7 @@ def query_user(username: str, password: str):
         return db_return_codes.UA_LOGIN_SUCCESS
 
 
-def get_user_hash(username: str) -> tuple: # (retcode, data)
+def get_user_hash(username: str) -> Tuple[int, Union[str, int]]:  # (retcode, data)
     meta = sqlalchemy.MetaData()
     dbConnection, engine = db_utils.db_connect(ret_engine=True)
     user_accounts = sqlalchemy.Table(db_config.USER_ACCOUNTS_TBL_NAME, meta, autoload_with=engine)

@@ -6,7 +6,7 @@ confirms = ["Y", "y", "Yes", "yes"]
 denys = ["N", "n", "No", "no"]
 
 
-def setup_secret_file():
+def setup_secret_file() -> None:
     # Defaults
     user = 'db_user'
     password = 'test_db_pw'
@@ -32,7 +32,7 @@ def setup_secret_file():
 
 
 # Sets up database
-def setup_database():
+def setup_database() -> None:
     import db_config
     un = json.dumps(db_config.user)
     pw = json.dumps(db_config.password)
@@ -42,11 +42,10 @@ def setup_database():
               f"CREATE DATABASE covid_data; "
               f"GRANT ALL PRIVILEGES on covid_data.* to {un}; "
               f"FLUSH PRIVILEGES;'")
-    pass
 
 
 # Sets up prereqs
-def setup_prereqs():
+def setup_prereqs() -> None:
     os.system(f"apt install python3-pip")
     os.system(f"python3 -m pip install sqlalchemy")
     os.system(f"python3 -m pip install numpy")
@@ -56,7 +55,7 @@ def setup_prereqs():
 
 
 # Full installation
-def full_install():
+def full_install() -> None:
     response = input(f"Do you want to generate a db_gen_secret file?")
     if response in confirms:
         setup_secret_file()

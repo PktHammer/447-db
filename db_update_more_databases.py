@@ -5,7 +5,7 @@ import db_utils
 import json
 import db_logger
 import db_return_codes
-
+from typing import Union
 reserved_tables = [{db_config.COVID_DATA_TBL_NAME},
                    {db_config.PRISON_DATA_TBL_NAME},
                    {db_config.USER_DB_UPLOADS_TBL_NAME},
@@ -13,7 +13,7 @@ reserved_tables = [{db_config.COVID_DATA_TBL_NAME},
 
 
 # UAT: Remove User Table
-def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFIED"):
+def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFIED") -> str:
     dbConnection = db_utils.db_connect()
     tn = json.dumps(rm_table_name)
     un = json.dumps(requesting_user)
@@ -30,7 +30,7 @@ def remove_user_table(rm_table_name: str, requesting_user: str= "NO_USER_SPECIFI
 
 
 # UAT: Create new table
-def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
+def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO_USER_SPECIFIED") -> str:
     # Perhaps check if the url is bad here:
     if new_table_name in reserved_tables:
         print(f"Sorry, {new_table_name} is reserved")
@@ -75,7 +75,7 @@ def create_new_table(csv_url: str, new_table_name: str, requesting_user: str="NO
 
 
 # UAT: Update/Overwrite Table, written in SQLA Core
-def update_table(table_name: str, requesting_user: str="NO_USER_SPECIFIED"):
+def update_table(table_name: str, requesting_user: str="NO_USER_SPECIFIED") -> Union[int, str]:
     if table_name in reserved_tables:
         return "Sorry, this is managed"
     meta = sqlalchemy.MetaData()
